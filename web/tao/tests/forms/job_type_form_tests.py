@@ -20,6 +20,11 @@ class JobTypeFormTests(LiveServerTest):
         for i in range(3):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=box_sim, galaxy_model=g, max_job_box_count=25)
+<<<<<<< HEAD
+=======
+            for j in range(10):
+                SnapshotFactory.create(dataset=ds, redshift=str(j)+".0")
+>>>>>>> work
             for j in range(3):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -29,6 +34,11 @@ class JobTypeFormTests(LiveServerTest):
         for i in range(4,8):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25, id=i)
+<<<<<<< HEAD
+=======
+            for j in range(10):
+                SnapshotFactory.create(dataset=ds, redshift=str(j)+".0")
+>>>>>>> work
             for j in range(4,7):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -36,10 +46,18 @@ class JobTypeFormTests(LiveServerTest):
 
 
         for i in range(3):
+<<<<<<< HEAD
             StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)
             BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
             DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
             SnapshotFactory.create(dataset_id=i);
+=======
+            StellarModelFactory.create(label='stellar_label_%03d' % i,
+                                       name='model{0}/sspm.dat'.format(i),
+                                       description='<p>Description %d </p>' % i)
+            BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
+            DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
+>>>>>>> work
             SurveyPresetFactory.create(name='Preset %d' % i, parameters=params_string)
 
         username = "person"
@@ -92,18 +110,31 @@ class JobTypeFormTests(LiveServerTest):
         sed_pop = self.get_selected_option_text(self.sed_id('single_stellar_population_model'))
         self.assertEqual('stellar_label_001', sed_pop)
 
+<<<<<<< HEAD
         self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
+=======
+        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Apparent)','Band pass filter 002 (Apparent)'])
+>>>>>>> work
 
     def test_mock_image_params(self):
         self.upload_params_file()
 
         self.click('tao-tabs-mock_image')
+<<<<<<< HEAD
 
         self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
         self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()', 'pk'))
         self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options', 'value'))
 
         self.assertEqual(2, self.get_image_setting_ko_field(0,'sub_cone'))
+=======
+        self.assertEqual([u'ALL', 0, 1, 2], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
+        self.assertEqual([u'1_apparent', u'3_apparent'],
+            self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()', 'pk'))
+        self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options', 'value'))
+
+        self.assertEqual(1, self.get_image_setting_ko_field(0,'sub_cone'))
+>>>>>>> work
         self.assertEqual('3_apparent', self.get_image_setting_ko_field(0, 'mag_field', field='pk'))
 
         self.assertEqual('7', self.get_image_setting_ko_value(0, 'min_mag'))
@@ -114,11 +145,19 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('1', self.get_image_setting_ko_value(0, 'origin_dec'))
         self.assertEqual('1', self.get_image_setting_ko_value(0, 'fov_ra'))
         self.assertEqual('2', self.get_image_setting_ko_value(0, 'fov_dec'))
+<<<<<<< HEAD
         self.assertEqual('66', self.get_image_setting_ko_value(0, 'width'))
         self.assertEqual('66', self.get_image_setting_ko_value(0, 'height'))
 
         self.assertEqual(3, self.get_image_setting_ko_field(1,'sub_cone'))
         self.assertEqual('1_absolute', self.get_image_setting_ko_field(1, 'mag_field', field='pk'))
+=======
+        self.assertEqual('667', self.get_image_setting_ko_value(0, 'width'))
+        self.assertEqual('666', self.get_image_setting_ko_value(0, 'height'))
+
+        self.assertEqual(2, self.get_image_setting_ko_field(1,'sub_cone'))
+        self.assertEqual('3_apparent', self.get_image_setting_ko_field(1, 'mag_field', field='pk'))
+>>>>>>> work
 
         self.assertEqual('', self.get_image_setting_ko_value(1, 'min_mag'))
         self.assertEqual('11', self.get_image_setting_ko_value(1, 'max_mag'))
@@ -128,8 +167,13 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('1', self.get_image_setting_ko_value(1, 'origin_dec'))
         self.assertEqual('1', self.get_image_setting_ko_value(1, 'fov_ra'))
         self.assertEqual('2', self.get_image_setting_ko_value(1, 'fov_dec'))
+<<<<<<< HEAD
         self.assertEqual('77', self.get_image_setting_ko_value(1, 'width'))
         self.assertEqual('77', self.get_image_setting_ko_value(1, 'height'))
+=======
+        self.assertEqual('778', self.get_image_setting_ko_value(1, 'width'))
+        self.assertEqual('777', self.get_image_setting_ko_value(1, 'height'))
+>>>>>>> work
 
 
 
@@ -137,11 +181,18 @@ class JobTypeFormTests(LiveServerTest):
         self.upload_params_file()
 
         self.click('tao-tabs-record_filter')
+<<<<<<< HEAD
 
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
         self.assertEqual('Band pass filter 002 (Apparent)', rf_filter)
         rf_expected = {
             self.rf_id('min'): '1',
+=======
+        rf_filter = self.get_selected_option_text(self.rf_id('filter'))
+        self.assertEqual('parameter_005 label', rf_filter)
+        rf_expected = {
+            self.rf_id('min'): '',
+>>>>>>> work
             self.rf_id('max'): '12'
         }
         
@@ -157,7 +208,10 @@ class JobTypeFormTests(LiveServerTest):
         self.upload_params_file()
 
         self.click('tao-tabs-summary_submit')
+<<<<<<< HEAD
 
+=======
+>>>>>>> work
         self.assert_summary_field_correctly_shown('Light-Cone', 'light_cone', 'geometry_type')
         self.assert_summary_field_correctly_shown('simulation_001', 'light_cone', 'simulation')
         self.assert_summary_field_correctly_shown('galaxy_model_006', 'light_cone', 'galaxy_model')
@@ -168,7 +222,11 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_summary_field_correctly_shown('Not selected', 'sed', 'apply_dust')
         self.assert_summary_field_correctly_shown('2 images', 'mock_image', 'select_mock_image')
 
+<<<<<<< HEAD
         self.assert_summary_field_correctly_shown(u'1.0 \u2264 Band pass filter 002 (Apparent) \u2264 12.0', 'record_filter', 'record_filter')
+=======
+        self.assert_summary_field_correctly_shown(u'parameter_005 label \u2264 12.0', 'record_filter', 'record_filter')
+>>>>>>> work
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 
@@ -176,8 +234,23 @@ class JobTypeFormTests(LiveServerTest):
     def test_load_preset(self):
         self.click('presets_button')
         self.click('load_survey_preset_button')
+<<<<<<< HEAD
         self.assert_page_has_content("Survey Preset 'Preset 0' loaded successfully.")
         
+=======
+        # Check we're on the correct page
+        # This has the side effect of waiting for the browser to completely load
+        self.assert_on_page('mock_galaxy_factory')
+        self.assert_page_has_content("Survey Preset 'Preset 0' loaded successfully.")
+    
+    def test_handles_malformed_xml(self):
+        from selenium.webdriver.support.wait import WebDriverWait
+        timeout = 2
+        json_path = os.path.join(PROJECT_DIR, 'test_data', 'test_data.json')
+        self.selenium.find_element_by_id('id_job_type-params_file').send_keys(json_path)
+        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('.alert-error'))
+        self.assert_page_has_content("Failed to process parameter file: 'test_data.json'.")
+>>>>>>> work
 
     def get_ko_array(self, vm_ko_array, field):
         js = 'return $.map(' + vm_ko_array + ', function(v, i) { return v.' + field + '; });'

@@ -16,7 +16,7 @@ public:
       // Setup some options.
       options().add_options()
          ( "mode,m", hpc::po::value<std::string>( &_mode )->default_value( "mass" ), "operation mode [mass]" )
-         ( "sim,s", hpc::po::value<std::string>( &_sim )->default_value( "minimill" ), "simulation [minimill,mill]" )
+         ( "sim,s", hpc::po::value<std::string>( &_sim )->default_value( "minimill" ), "simulation [minimill,mill,bolshoi]" )
          ( "snap,n", hpc::po::value<int>( &_snap )->default_value( 63 ), "snapshot" )
          ( "verbose,v", hpc::po::value<bool>( &_verb )->default_value( false ), "verbosity" );
 
@@ -24,19 +24,33 @@ public:
       parse_options( argc, argv );
 
       // Check options.
-      EXCEPT( _mode == "mass" || _mode == "ages", "Invalid mode." );
-      EXCEPT( _sim == "minimill" || _sim == "mill", "Invalid simulation." );
+      EXCEPT( _mode == "error" || _mode == "mass" || _mode == "ages" ||
+              _mode == "count" || _mode == "magnitudes", "Invalid mode." );
+      EXCEPT( _sim == "minimill" || _sim == "mill" || _sim == "bolshoi", "Invalid simulation." );
 
       // Setup logging.
       if( _verb )
          LOG_PUSH( new hpc::log::stdout( hpc::log::info ) );
+
+      // Basic info.
+      if( hpc::mpi::comm::world.rank() == 0 )
+      {
+	 std::cerr << "Mode:    " << _mode << "\n";
+	 std::cerr << "Dataset: " << _sim << "\n";
+      }
    }
 
    void
    operator()()
    {
-      if( _mode == "mass" )
+      if( _mode == "error" )
+         _error();
+      else if( _mode == "magnitudes" )
+         _magnitudes();
+      else if( _mode == "mass" )
          _mass();
+      else if( _mode == "count" )
+         _count();
       else if( _mode == "ages" )
 	 _ages();
    }
@@ -44,7 +58,7 @@ public:
 protected:
 
    void
-   _mass()
+   _error()
    {
       typedef hpc::view<std::vector<tao::real_type>> view_type;
       typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
@@ -116,6 +130,137 @@ protected:
    }
 
    void
+   _magnitudes()
+   {
+      typedef hpc::view<std::vector<tao::real_type>> view_type;
+      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
+
+      tao::backends::multidb<tao::real_type> be;
+      tao::simulation const* sim;
+      _connect( be, sim );
+
+      // Load the stellar population model.
+      tao::stellar_population ssp;
+      ssp.load( "data/stellar_populations/m05/ages.dat",
+                "data/stellar_populations/m05/wavelengths.dat",
+                "data/stellar_populations/m05/metallicities.dat",
+                "data/stellar_populations/m05/ssp.ssz" );
+
+      // Load the bandpass filter.
+      tao::bandpass bpf( "data/bandpass_filters/k.dat" );
+
+      // Prepare star formation history.
+      tao::age_line<tao::real_type> snap_ages( be.session(), *sim );
+      tao::sfh sfh;
+      sfh.set_snapshot_ages( &snap_ages );
+
+      // Dump to files.
+      std::ofstream file( std::string( "magnitudes." ) + hpc::mpi::rank_string() );
+
+      // Do a silly iteration over all the galaxies.
+      tao::box<tao::real_type> box( sim );
+      box.set_snapshot( _snap );
+      tao::query<tao::real_type> qry;
+      for( auto gal_it = be.galaxy_begin( qry, box ); gal_it != be.galaxy_end( qry, box ); ++gal_it )
+      {
+         tao::batch<tao::real_type> bat = *gal_it;
+         auto const  snaps        = bat.scalar<int>( "snapnum" );
+         auto const& tbl          = bat.attribute<std::string>( "table" );
+         auto const  tree_gids    = bat.scalar<long long>( "globaltreeid" );
+         auto        gal_gids     = bat.scalar<long long>( "globalindex" );
+
+         for( unsigned ii = 0; ii < bat.size(); ++ii )
+         {
+            // Load the SFH.
+            sfh.load_tree_data( be.session( tbl ), tbl, tree_gids[ii], gal_gids[ii] );
+
+            // Rebin.
+            std::vector<tao::real_type> disk_masses( ssp.age_masses_size() );
+            std::vector<tao::real_type> bulge_masses( ssp.age_masses_size() );
+            sfh.rebin<decltype(disk_masses)>( disk_masses, bulge_masses, ssp );
+
+            // Combine.
+            std::vector<tao::real_type> total_masses( disk_masses.size() );
+            std::transform( disk_masses.begin(), disk_masses.end(), bulge_masses.begin(), 
+                            total_masses.begin(), std::plus<tao::real_type>() );
+
+            // Compute SED.
+            std::vector<tao::real_type> spectra( ssp.wavelengths().size() );
+            ssp.sum( total_masses.begin(), spectra.begin() );
+
+            // Calculate magnitude.
+            tao::sed<spline_type> sed( ssp.wavelengths(), spectra );
+
+            // Write magnitudes.
+            file << tao::absolute_magnitude( sed, bpf ) << "\n";
+         }
+      }
+   }
+
+   void
+   _count()
+   {
+      typedef hpc::view<std::vector<tao::real_type>> view_type;
+      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
+
+      tao::backends::multidb<tao::real_type> be;
+      tao::simulation const* sim;
+      _connect( be, sim );
+
+      // Keep count.
+      unsigned long long cnt = 0;
+
+      // Find all galaxies at redshift.
+      tao::box<tao::real_type> box( sim );
+      box.set_snapshot( _snap );
+      tao::query<tao::real_type> qry;
+      qry.add_output_field( "stellarmass" );
+      for( auto gal_it = be.galaxy_begin( qry, box ); gal_it != be.galaxy_end( qry, box ); ++gal_it )
+      {
+         tao::batch<tao::real_type> bat = *gal_it;
+	 hpc::view<std::vector<tao::real_type>> masses = bat.scalar<tao::real_type>( "stellarmass" );
+
+	 // Check masses.
+	 for( unsigned ii = 0; ii < bat.size(); ++ii )
+	    ++cnt;
+      }
+
+      // Print results.
+      std::cout << "Number of galaxies found: " << cnt << "\n";
+   }
+
+   void
+   _mass()
+   {
+      typedef hpc::view<std::vector<tao::real_type>> view_type;
+      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
+
+      tao::backends::multidb<tao::real_type> be;
+      tao::simulation const* sim;
+      _connect( be, sim );
+
+      // Find all galaxies at redshift.
+      tao::box<tao::real_type> box( sim );
+      box.set_snapshot( _snap );
+      tao::query<tao::real_type> qry;
+      qry.add_output_field( "stellarmass" );
+      qry.add_output_field( "mvir" );
+      for( auto gal_it = be.galaxy_begin( qry, box ); gal_it != be.galaxy_end( qry, box ); ++gal_it )
+      {
+         tao::batch<tao::real_type> bat = *gal_it;
+	 hpc::view<std::vector<tao::real_type>> masses = bat.scalar<tao::real_type>( "stellarmass" );
+	 hpc::view<std::vector<tao::real_type>> mvirs = bat.scalar<tao::real_type>( "mvir" );
+
+	 // Check masses.
+	 for( unsigned ii = 0; ii < bat.size(); ++ii )
+	 {
+	    if( mvirs[ii] > 2.0 )
+	       std::cout << masses[ii]*1e10 << "\n";
+	 }
+      }
+   }
+
+   void
    _ages()
    {
       tao::backends::multidb<tao::real_type> be;
@@ -143,8 +288,10 @@ protected:
    {
       // Pick a simulation.
       std::string db_name;
-      if( _sim == "mill" )
-         db_name = "";
+      if( _sim == "bolshoi" )
+         db_name = "bolshoi_full_3servers_v4";
+      else if( _sim == "mill" )
+         db_name = "millennium_full_3servers_v4";
       else
          db_name = "millennium_mini_3servers_v4";
 

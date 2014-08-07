@@ -22,6 +22,8 @@
                 <th> Last Name </th>
                 <th> Username </th>
                 <th> Email </th>
+                <th> Institution </th>
+                <th> Scientific Interests </th>
                 <th> Approve/Reject </th>
             </tr>
         </thead>
@@ -33,6 +35,8 @@
                     <td> {{ user.last_name}} </td>
                     <td> {{ user.display_name }} </td>
                     <td> {{ user.email }} </td>
+                    <td> {{ user.display_institution }}</td>
+                    <td style="max-width: 200px;"> {{ user.scientific_interests }}</td>
                     <td>
                         <form action="{% url 'approve_user' user.id %}" method="POST" style="display:inline;">
                             <input type="hidden" name="user_id" value="{{ user.id }}" />

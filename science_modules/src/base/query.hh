@@ -48,10 +48,12 @@ namespace tao {
 	 add_output_field( "sfrdiskz" );
 	 add_output_field( "sfrbulgez" );
 	 add_output_field( "diskscaleradius" );
+	 add_output_field( "coldgas" );
+	 add_output_field( "metalscoldgas" );
       }
 
       void
-      add_output_field( const std::string& field )
+      add_output_field( std::string const& field )
       {
          _out_fields.clear();
          _of_set.insert( hpc::to_lower_copy( field ) );

@@ -11,8 +11,13 @@ class LogReader(object):
     def __init__(self,Options):
         self.Options=Options
     
+    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
+    
     def GetFileName(self,UserName,JobID,SubJobIndex):
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log','tao.log.'+str(SubJobIndex))        
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log','tao.log.'+str(SubJobIndex))        
         return path
     def ParseFile(self,CurrentJobRecord):
 	UserName=CurrentJobRecord['username']
@@ -24,7 +29,7 @@ class LogReader(object):
         counter=10
         while ((not os.path.exists(FilePath)) and counter>0):
             counter=counter-1
-            logging.info('TAO LogFile not found... Will retry for more '+str(counter)+' times')
+            #logging.info('TAO LogFile not found... Will retry for more '+str(counter)+' times')
             time.sleep(1)
             
         if(os.path.exists(FilePath)):

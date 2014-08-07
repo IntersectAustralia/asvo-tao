@@ -6,16 +6,17 @@
 #include "hdf5_types.hh"
 
 class application
-   : public hpc::application
+   : public hpc::mpi::application
 {
 public:
 
    application( int argc,
                 char* argv[] )
-      : hpc::application( argc, argv )
+      : hpc::mpi::application( argc, argv )
    {
       // Setup some options.
       options().add_options()
+	 ( "mode,m", hpc::po::value<std::string>( &_mode )->default_value( "ggi" ), "mode of operation" )
 	 ( "sage,s", hpc::po::value<hpc::fs::path>( &_fn ), "SAGE HDF5 file" )
 	 ( "ggi,g",  hpc::po::value<unsigned long long>( &_ggi ), "global galaxy index" );
 
@@ -26,6 +27,17 @@ public:
 
    void
    operator()()
+   {
+      if( _mode == "ggi" )
+	 ggi();
+      else if( _mode == "count" )
+	 count();
+      else if( _mode == "mass" )
+	 mass();
+   }
+
+   void
+   ggi()
    {
       hpc::h5::file file( _fn.native(), H5F_ACC_RDONLY );
 
@@ -57,6 +69,59 @@ public:
    }
 
    void
+   count()
+   {
+      hpc::h5::file file( _fn.native(), H5F_ACC_RDONLY );
+
+      hpc::h5::datatype mem_type, file_type;
+      sage::make_hdf5_types( mem_type, file_type );
+      hpc::h5::dataset gals_dset( file, "galaxies" );
+      std::array<unsigned long long,2> idx_rng = hpc::mpi::modulo( gals_dset.extent() );
+      std::vector<sage::galaxy> gals( 10000 );
+      unsigned long long cnt = 0;
+      for( unsigned long long ii = idx_rng[0]; ii < idx_rng[1]; ii += 10000 )
+      {
+	 gals.resize( std::min<size_t>( 10000, idx_rng[1] - ii ) );
+	 gals_dset.read( gals.data(), mem_type, gals.size(), ii );
+	 for( unsigned jj = 0; jj < gals.size(); ++jj )
+	 {
+	    if( gals[jj].snapshot == 63 )
+	       ++cnt;
+	 }
+      }
+
+      cnt = hpc::mpi::comm::world.all_reduce( cnt );
+      if( hpc::mpi::comm::world.rank() == 0 )
+	 std::cout << "Galaxies in snapshot 63: " << cnt << "\n";
+   }
+
+   void
+   mass()
+   {
+      hpc::h5::file file( _fn.native(), H5F_ACC_RDONLY );
+
+      hpc::h5::datatype mem_type, file_type;
+      sage::make_hdf5_types( mem_type, file_type );
+      hpc::h5::dataset gals_dset( file, "galaxies" );
+      std::array<unsigned long long,2> idx_rng = hpc::mpi::modulo( gals_dset.extent() );
+      std::vector<sage::galaxy> gals( 10000 );
+      std::string fn = std::string( "masses." ) + hpc::mpi::rank_string();
+      std::ofstream out_file( fn );
+      unsigned snap = hpc::h5::dataset( file, "snapshot_redshifts" ).extent() - 1;
+      for( unsigned long long ii = idx_rng[0]; ii < idx_rng[1]; ii += 10000 )
+      {
+	 gals.resize( std::min<size_t>( 10000, idx_rng[1] - ii ) );
+	 gals_dset.read( gals.data(), mem_type, gals.size(), ii );
+	 for( unsigned jj = 0; jj < gals.size(); ++jj )
+	 {
+	    // TODO: Remove mvir stuff.
+	    if( gals[jj].snapshot == snap && gals[jj].mvir > 2.0 )
+	       out_file << gals[jj].stellar_mass*1e10 << "\n";
+	 }
+      }
+   }
+
+   void
    dump_ggis( std::vector<sage::galaxy> const& gals,
 	      std::multimap<unsigned,unsigned> const& parents,
 	      unsigned lgi )
@@ -72,6 +137,7 @@ public:
 
 protected:
 
+   std::string _mode;
    hpc::fs::path _fn;
    unsigned long long _ggi;
 };

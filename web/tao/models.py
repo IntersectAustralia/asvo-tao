@@ -12,6 +12,21 @@ from tao.mail import send_mail
 from datetime import datetime
 
 import os
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+
+def format_human_readable_file_size(file_size):
+    size = float(file_size)
+    units = ['B', 'kB', 'MB', 'GB', 'TB']
+    for x in units:
+        if size < 1000.0:
+            return '%3d%s' % (round(size), x)
+        size /= 1000.0
+    return '%3.1f%s' % (size, 'PB')
+
 
 
 def format_human_readable_file_size(file_size):
@@ -53,6 +68,12 @@ class TaoUser(auth_models.AbstractUser):
             return self.first_name + ' (via AAF)'
         else:
             return self.username
+            
+    def display_institution(self):
+        if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
+            return '(via AAF)'
+        else:
+            return self.institution
 
     def display_registration_status(self):
         messages = {
@@ -97,27 +118,48 @@ class TaoUser(auth_models.AbstractUser):
         return self.disk_quota  # in MB
 
     def display_user_disk_quota(self):
+<<<<<<< HEAD
         return format_human_readable_file_size(float(self.user_disk_quota()) * 1000**2)
+=======
+        return format_human_readable_file_size(self.user_disk_quota() * 1000.0 ** 2) # convert MB to B for formatting
+>>>>>>> work
 
     def get_current_disk_usage(self):
         user_jobs = Job.objects.filter(user=self)
         current_disk_usage = 0
         for job in user_jobs:
             if job.is_completed():
+<<<<<<< HEAD
                 current_disk_usage += job.disk_size() # disk size in B
+=======
+                current_disk_usage += job.disk_size() # disk size in MB
+>>>>>>> work
 
         return current_disk_usage
 
     def display_current_disk_usage(self):
+<<<<<<< HEAD
         return format_human_readable_file_size(self.get_current_disk_usage())  # input file size in B
+=======
+        return format_human_readable_file_size(self.get_current_disk_usage()  * 1000.0 ** 2)  # convert MB to B for formatting
+
+    def set_password(self, raw_password):
+        if len(raw_password) < settings.MIN_PASSWORD_LENGTH:
+            raise ValueError("Password length must be at least " + str(settings.MIN_PASSWORD_LENGTH))
+        super(TaoUser, self).set_password(raw_password)
+>>>>>>> work
 
     def check_disk_usage_within_quota(self):
         user_quota = float(self.user_disk_quota())
         if user_quota == -1:  # user has unlimited disk quota
             return True
         else:
+<<<<<<< HEAD
             disk_usage_in_MB = self.get_current_disk_usage() / 1000.0**2
             return disk_usage_in_MB <= user_quota
+=======
+            return self.get_current_disk_usage() <= user_quota
+>>>>>>> work
 
 class Simulation(models.Model):        
 
@@ -126,7 +168,8 @@ class Simulation(models.Model):
     box_size = models.DecimalField(max_digits=10, decimal_places=3)
     details = models.TextField(default='')
     order = models.IntegerField(default='0')
-
+    acknowledgement_txt = models.TextField(default='')
+    
     def __unicode__(self):
         return self.name
     
@@ -148,7 +191,8 @@ class GalaxyModel(models.Model):
     simulation_set = models.ManyToManyField(Simulation, through='DataSet')
     name = models.CharField(max_length=100, unique=True)
     details = models.TextField(default='')
-
+    acknowledgement_txt = models.TextField(default='')
+	 
     def __unicode__(self):
         return self.name
     
@@ -185,7 +229,12 @@ class DataSet(models.Model):
     job_size_p1 = models.FloatField(default=0.06555053)
     job_size_p2 = models.FloatField(default=-0.10355211)
     job_size_p3 = models.FloatField(default=0.37135452)
+<<<<<<< HEAD
     
+=======
+    enableSED = models.BooleanField(default=True)
+    enableImage = models.BooleanField(default=True)
+>>>>>>> work
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
         ordering = ['id']
@@ -211,7 +260,7 @@ class DataSetProperty(models.Model):
                   (TYPE_LONG, 'long'),
                   )
     name = models.CharField(max_length=200)
-    units = models.CharField(max_length=20, default='', blank=True)
+    units = models.CharField(max_length=30, default='', blank=True)
     label = models.CharField(max_length=40)
     dataset = models.ForeignKey(DataSet)
     data_type = models.IntegerField(choices=DATA_TYPES)
@@ -323,6 +372,9 @@ class Job(models.Model):
     def is_completed(self):
         return self.status == Job.COMPLETED
 
+    def is_in_progress(self):
+        return self.status == Job.IN_PROGRESS        
+
     def is_error(self):
         return self.status == Job.ERROR
 
@@ -332,11 +384,16 @@ class Job(models.Model):
     def recalculate_disk_usage(self):
         sum_file_sizes = 0
         for f in self.files():
+<<<<<<< HEAD
             sum_file_sizes += f.get_file_size_in_B()
+=======
+            sum_file_sizes += f.get_file_size_in_MB()
+>>>>>>> work
         self.disk_usage = sum_file_sizes
         return self.disk_usage
 
     def disk_size(self):
+<<<<<<< HEAD
         if not self.is_completed():
             return 0
 
@@ -357,6 +414,39 @@ class Job(models.Model):
         for root, dirs, files in os.walk(job_base_dir):
             all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
 
+=======
+        """Answer the receiver's disk usage (if job is complete)."""
+        if not self.is_completed():
+            return 0
+        else:
+            return self.recalculate_disk_usage()
+
+
+    def display_disk_size(self):
+        return format_human_readable_file_size(self.disk_size() * 1000.0 ** 2)  # convert MB to B when formatting
+    
+
+    def files(self):
+        """Answer the sorted list of files for the receiver.
+        If the output_path hasn't been set return an empty list.
+        If an error occurs during file retrieval, log the error and answer the existing list."""
+        all_files = []
+        if self.output_path is None:
+            # No access to the files yet
+            return all_files
+        op = self.output_path.strip()
+        if len(op) == 0:
+            # No access to the files yet
+            return all_files
+        try:
+            job_base_dir = os.path.join(settings.FILES_BASE, op)
+            for root, dirs, files in os.walk(job_base_dir):
+                all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
+        except e:
+            logger.error("Unable to get job files for id {0}, msg={1}".format(
+                self.id, str(e)))
+            # Continue on, the rest of the page should display OK.
+>>>>>>> work
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def files_tree(self):
@@ -418,18 +508,26 @@ class Job(models.Model):
 
 class JobFile(object):
     def __init__(self, job_dir, file_name):
-        self.file_name = file_name[len(job_dir)+1:]
+        self.file_name = file_name[len(job_dir):]
+        if self.file_name[0] == '/':
+            self.file_name = self.file_name[1:]
         self.file_path = os.path.join(job_dir, file_name)
         self.file_size = os.path.getsize(self.file_path)
     
     def can_be_downloaded(self):
+        """Deprecated.  This was originally used to limit download file size"""
         return True
 
     def get_file_size(self):
         return format_human_readable_file_size(self.file_size)
 
+<<<<<<< HEAD
     def get_file_size_in_B(self):
         return self.file_size
+=======
+    def get_file_size_in_MB(self):
+        return self.file_size / 1000.0 ** 2
+>>>>>>> work
 
 class BandPassFilter(models.Model):
     label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
@@ -448,7 +546,10 @@ class DustModel(models.Model):
     name = models.CharField(max_length=100, unique=True)
     label = models.CharField(max_length=100)
     details = models.TextField(default='')
-
+    itemsorder = models.IntegerField(default=0)
+    class Meta:
+        ordering = ['itemsorder']
+        
     def __unicode__(self):
         return self.label
 
@@ -517,4 +618,9 @@ class SurveyPreset(models.Model):
     parameters = models.TextField(max_length=1000000)
     description = models.TextField(default='')
 
+<<<<<<< HEAD
+=======
+    def __str__(self):
+        return self.name
+>>>>>>> work
 

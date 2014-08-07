@@ -5,10 +5,17 @@
 // 
 
 var catalogue = catalogue || {};
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {};
 
 
 catalogue.modules.view_job = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+
+
+catalogue.module_defs.view_job = function ($) {
+>>>>>>> work
     // KO ViewModel
     var vm = {}
     this.vm = vm;
@@ -105,7 +112,11 @@ catalogue.modules.view_job = function ($) {
                             url: TAO_JOB_CTX + 'delete_job_output/' + TaoJob['job-id'],
                             type: 'POST',
                             success: function(response, textStatus, jqXHR) {
+<<<<<<< HEAD
                                 location.reload();
+=======
+                                window.open(response.next_url, '_top');
+>>>>>>> work
                             },
                             error: function(response, textStatus, jqXHR) {
                                 console.log("Couldn't create job_output_delete workflow command: " + response + textStatus);

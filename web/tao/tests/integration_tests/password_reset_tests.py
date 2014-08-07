@@ -7,9 +7,20 @@ from tao.tests.support.factories import UserFactory
 
 
 class PasswordResetTests(helper.LiveServerTest):
+<<<<<<< HEAD
 
     def setUp(self):
         super(PasswordResetTests, self).setUp()
+=======
+    """Note that these tests as currently written require the 
+    browser window to be wide enough to show the menu bar.
+    If the collapsed menu is displayed a number of tests will fail
+    to find the appropriate elements."""
+
+    def setUp(self):
+        super(PasswordResetTests, self).setUp()
+        self.selenium.maximize_window()
+>>>>>>> work
         self.username = "username"
         self.first_name = "Bob"
         self.userpass = "password"

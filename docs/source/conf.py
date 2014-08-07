@@ -12,7 +12,7 @@
 # serve to show the default.
 
 import sys, os
-from django.conf import settings
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -28,11 +28,12 @@ sys.path[0:0] = [ os.path.abspath(p) for p in [
     '../../web',
     ] ]
 
-# Set up the Django settings/environment
-from django.core.management import setup_environ
-from tao import settings
-setup_environ(settings)
 
+# Set up the Django settings/environment
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tao.settings") 
+from django.conf import settings
+
+print 'DEPLOYMENT CONTEXT >', settings.STATIC_CTX
 
 # -- General configuration -----------------------------------------------------
 
@@ -57,7 +58,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'TAO'
-copyright = u'2013, ASVO Team'
+copyright = u'2014, ASVO Team'
+
+html_context = {'tao_path': settings.STATIC_CTX}
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -169,19 +172,19 @@ html_static_path = ['_static']
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+html_domain_indices = False
 
 # If false, no index is generated.
-#html_use_index = True
+html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
-#html_show_sphinx = True
+html_show_sphinx = False
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
 #html_show_copyright = True
@@ -279,7 +282,7 @@ texinfo_documents = [
 epub_title = u'Theoretical Astrophysical Observatory'
 epub_author = u'TAO Team'
 epub_publisher = u'TAO Team'
-epub_copyright = u'2013, TAO Team'
+epub_copyright = u'2014, TAO Team'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

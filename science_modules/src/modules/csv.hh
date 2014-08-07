@@ -23,7 +23,7 @@ namespace tao {
 
          static
          module_type*
-         factory( const string& name,
+         factory( std::string const& name,
                   pugi::xml_node base )
          {
             return new csv( name, base );
@@ -31,7 +31,7 @@ namespace tao {
 
       public:
 
-         csv( const string& name = string(),
+         csv( std::string const& name = std::string(),
               pugi::xml_node base = pugi::xml_node() )
             : module_type( name, base ),
               _records( 0 )
@@ -61,11 +61,13 @@ namespace tao {
             const xml_dict& dict = this->_dict;
 
             if( mpi::comm::world.size() == 1 )
-	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
+	       _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
 	    else
-	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
+	       _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
             LOGILN( "File Name: ", _fn );
-            _fields = dict.get_list<string>( "fields" );
+            _fields = dict.get_list<std::string>( "fields" );
+	    for( auto& str : _fields )
+	       hpc::to_lower( (std::string&)str );
             ReadFieldsInfo(dict );
 
             // Open the file.
@@ -83,7 +85,7 @@ namespace tao {
          void
 	 ReadFieldsInfo( const xml_dict& dict )
 	 {
-            std::list<boost::optional<std::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+            std::list<boost::optional<std::string>> Templabels = dict.get_list_attributes<std::string>( "fields","label" );
 
 
 
@@ -150,8 +152,8 @@ namespace tao {
 
 
 
-         string
-	 _encode( string _toencode_string )
+         std::string
+	 _encode( std::string _toencode_string )
 	 {
 	    std::map<char, std::string> transformations;
 	    transformations['&']  = std::string("_");
@@ -193,13 +195,13 @@ namespace tao {
 
 	    auto lblit = _labels.cbegin();
 
-	    string FieldName=*lblit++;
+	    std::string FieldName=*lblit++;
 	    FieldName=_encode(FieldName);
 	    _file<<FieldName;
 
 	    while( lblit != _labels.cend() )
 	    {
-	       string FieldName=*lblit++;
+	       std::string FieldName=*lblit++;
 	       FieldName=_encode(FieldName);
 	       _file<<","<<FieldName;
 	    }
@@ -236,12 +238,12 @@ namespace tao {
          void
          _write_field( const tao::batch<real_type>& bat,
                        unsigned idx,
-                       const string& field )
+                       const std::string& field )
          {
             switch( std::get<2>( bat.field( field ) ) )
             {
                case tao::batch<real_type>::STRING:
-                  _file << bat.scalar<string>( field )[idx];
+                  _file << bat.scalar<std::string>( field )[idx];
                   break;
 
                case tao::batch<real_type>::DOUBLE:
@@ -268,8 +270,8 @@ namespace tao {
       protected:
 
          std::ofstream _file;
-         string _fn;
-         std::list<string> _fields;
+	 std::string _fn;
+         std::list<std::string> _fields;
          std::list<std::string> _labels;
          unsigned long long _records;
          tao::filter const* _filt;

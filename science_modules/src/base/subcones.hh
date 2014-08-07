@@ -24,7 +24,7 @@ namespace tao {
       double b = lc.simulation()->box_size();
       double d0 = lc.min_dist();
       double d1 = lc.max_dist();
-      double phi = theta + lc.max_ra();
+      double phi = theta + (lc.max_ra() - lc.min_ra());
 
       // Calculate the cone RA height and declination height.
       double h = d1*sin( phi ) - d0*sin( theta );

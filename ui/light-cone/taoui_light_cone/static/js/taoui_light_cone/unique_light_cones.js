@@ -51,9 +51,28 @@
     var get_number_of_unique_light_cones = function () {
         var vm = catalogue.modules.light_cone.vm;
 
+<<<<<<< HEAD
         var alpha1 = parseFloat(vm.ra_opening_angle());
         var box_side = vm.dark_matter_simulation().fields.box_size;
         var d1 = 0.0; //redshift_to_distance(parseFloat(vm.redshift_min()));
+=======
+        // forces KO dependencies, even if algorithm fails halfway through
+        vm.ra_min();
+		  vm.ra_max();        
+        vm.dark_matter_simulation();
+        vm.redshift_min();
+        vm.redshift_max();
+        vm.dec_min();
+		  vm.dec_max();
+		  
+		  if(vm.ra_min()>0 || vm.dec_min()>0)
+		  	return 0;
+
+
+        var alpha1 = parseFloat(vm.ra_max())-parseFloat(vm.ra_min());
+        var box_side = vm.dark_matter_simulation().fields.box_size;
+        var d1 = 0;//redshift_to_distance(parseFloat(vm.redshift_min()));
+>>>>>>> work
         var d2 = redshift_to_distance(parseFloat(vm.redshift_max()));
         var beta1;
         for (beta1 = alpha1; beta1 < 90; beta1 = beta1 + 0.01) {
@@ -62,8 +81,13 @@
             }
         }
         var hv = Math.floor(d2 * Math.sin((Math.PI / 180) * (alpha1 + beta1)) - d1 * Math.sin((Math.PI / 180) * (alpha1 + beta1)));
+<<<<<<< HEAD
 
         var hh = 2 * d2 * Math.sin((Math.PI / 180) * (parseFloat(vm.dec_opening_angle())) / 2);
+=======
+		  dec_opening_angle= parseFloat(vm.dec_max())-parseFloat(vm.dec_min());
+        var hh = 2 * d2 * Math.sin((Math.PI / 180) * (dec_opening_angle) / 2);
+>>>>>>> work
 
         var nv = Math.floor(box_side / hv);
         var nh = Math.floor(box_side / hh);

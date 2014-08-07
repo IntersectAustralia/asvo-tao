@@ -33,7 +33,7 @@
       <parents>
 	<item>sed</item>
       </parents>
-      <model>Tonini et al. 2012</model>
+      <model>calzetti</model>
     </dust>
 
     <filter id="filter">
@@ -68,5 +68,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_balanced_v3</database>
+  <database>millennium_mini_3servers_v4</database>
 </tao>

@@ -7,7 +7,6 @@
 
 namespace tao {
    namespace modules {
-      using namespace hpc;
 
       ///
       /// SED science module. The SED module is responsible for calculating the
@@ -24,7 +23,7 @@ namespace tao {
 
          static
          module_type*
-         factory( const string& name,
+         factory( std::string const& name,
                   pugi::xml_node base )
          {
             return new sed( name, base );
@@ -32,9 +31,11 @@ namespace tao {
 
       public:
 
-         sed( const string& name = string(),
+         sed( std::string const& name = std::string(),
               pugi::xml_node base = pugi::xml_node() )
-            : module_type( name, base )
+            : module_type( name, base ),
+              _be( 0 ),
+              _sim( 0 )
          {
          }
 
@@ -43,9 +44,33 @@ namespace tao {
          {
          }
 
+         backend_type const*
+         backend() const
+         {
+            return _be;
+         }
+
+         tao::simulation const*
+         simulation() const
+         {
+            return _sim;
+         }
+
+         std::vector<real_type> const&
+         disk_age_masses() const
+         {
+            return _disk_age_masses;
+         }
+
+         std::vector<real_type> const&
+         bulge_age_masses() const
+         {
+            return _bulge_age_masses;
+         }
+
          virtual
          boost::optional<boost::any>
-         find_attribute( const string& name )
+         find_attribute( std::string const& name )
          {
             if( name == "wavelengths" )
                return boost::any( hpc::view<std::vector<double> const>( _ssp.wavelengths() ) );
@@ -58,18 +83,18 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const xml_dict& global_dict )
+         initialise( xml_dict const& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
                return;
             module_type::initialise( global_dict );
 
-            LOGILN( "Initialising SED module.", setindent( 2 ) );
+            LOGBLOCKI( "Initialising SED module." );
 
             // Locate the backend and the simulation.
             _be = this->parents().front()->backend();
-            _sim = this->template attribute<const simulation*>( "simulation" );
+            _sim = this->template attribute<tao::simulation const*>( "simulation" );
 
             // Handle optinos.
             _read_options( global_dict );
@@ -79,39 +104,37 @@ namespace tao {
             _sfh.set_snapshot_ages( &_snap_ages );
 
             // Allocate history bin arrays.
-            hpc::reallocate( _age_masses, _ssp.age_masses_size() );
+            hpc::reallocate( _disk_age_masses,  _ssp.age_masses_size() );
             hpc::reallocate( _bulge_age_masses, _ssp.age_masses_size() );
-            // _age_metals.reallocate( _ssp.bin_ages().size() );
 
             // Prepare the batch object.
             tao::batch<real_type>& bat = this->parents().front()->batch();
-            bat.set_vector<real_type>( "disk_spectra", _ssp.wavelengths().size() );
+            bat.set_vector<real_type>( "disk_spectra",  _ssp.wavelengths().size() );
             bat.set_vector<real_type>( "bulge_spectra", _ssp.wavelengths().size() );
             bat.set_vector<real_type>( "total_spectra", _ssp.wavelengths().size() );
-
-            LOGILN( "Done.", setindent( -2 ) );
          }
 
          ///
-         /// Run the module.
+         /// Run the module for a batch object.
          ///
          virtual
          void
          execute()
          {
-            ASSERT( this->parents().size() == 1 );
-	    LOGDLN( "Processing batch in SED module.", setindent( 2 ) );
+            ASSERT( this->parents().size() == 1, "SED module must have at least and "
+                    "at most one parent." );
+	    LOGBLOCKD( "Processing batch in SED module." );
 
             // Cache some information.
             tao::batch<real_type>& bat = this->parents().front()->batch();
-            const auto& table_name = bat.attribute<string>( "table" );
-            const auto tree_gids = bat.scalar<long long>( "globaltreeid" );
-            const auto gal_lids = bat.scalar<int>( "localgalaxyid" );
-            auto& total_spectra = bat.vector<real_type>( "total_spectra" );
-            auto& disk_spectra = bat.vector<real_type>( "disk_spectra" );
-            auto& bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
-            soci::session& sql = _be->session( table_name );
-	    auto gal_gids = bat.scalar<long long>( "globalindex" );
+            auto const& table_name = bat.attribute<std::string>( "table" );
+            auto const tree_gids   = bat.scalar<long long>( "globaltreeid" );
+            auto const gal_lids    = bat.scalar<int>(       "localgalaxyid" );
+            auto& total_spectra    = bat.vector<real_type>( "total_spectra" );
+            auto& disk_spectra     = bat.vector<real_type>( "disk_spectra" );
+            auto& bulge_spectra    = bat.vector<real_type>( "bulge_spectra" );
+	    auto const gal_gids    = bat.scalar<long long>( "globalindex" );
+            soci::session& sql     = _be->session( table_name );
 
             // Perform the processing.
             for( unsigned ii = 0; ii < bat.size(); ++ii )
@@ -122,18 +145,18 @@ namespace tao {
                _sfh.load_tree_data( sql, table_name, tree_gids[ii], gal_gids[ii] );
 
                // Rebin the star-formation history.
-               _sfh.rebin<std::vector<real_type>,std::vector<real_type>>( _age_masses, _bulge_age_masses, _ssp );
+               _sfh.rebin<std::vector<real_type>,std::vector<real_type>>(
+                  _disk_age_masses, _bulge_age_masses, _ssp
+                  );
 
                // Sum contributions from the SSP.
-               _ssp.sum( _age_masses.begin(), total_spectra[ii].begin() );
+               _ssp.sum( _disk_age_masses.begin(),  disk_spectra[ii].begin() );
                _ssp.sum( _bulge_age_masses.begin(), bulge_spectra[ii].begin() );
 
-               // Create disk spectra.
+               // Create total spectra.
                for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
-                  disk_spectra[ii][jj] = total_spectra[ii][jj] - bulge_spectra[ii][jj];
+                  total_spectra[ii][jj] = disk_spectra[ii][jj] + bulge_spectra[ii][jj];
             }
-
-	    LOGDLN( "Done.", setindent( -2 ) );
          }
 
          virtual
@@ -155,17 +178,17 @@ namespace tao {
       protected:
 
          void
-         _read_options( const xml_dict& global_dict )
+         _read_options( xml_dict const& global_dict )
          {
             // Cache dictionary.
-            const xml_dict& dict = this->_dict;
+            xml_dict const& dict = this->_dict;
 
             // Get the filenames for SSP information.
             auto path = data_prefix()/"stellar_populations";
-            auto ages_fn = path/dict.get<string>( "ages-file" );
-            auto waves_fn = path/dict.get<string>( "wavelengths-file" );
-            auto metals_fn = path/dict.get<string>( "metallicities-file" );
-            auto ssp_fn = path/dict.get<string>( "single-stellar-population-model" );
+            auto ages_fn = path/dict.get<std::string>( "ages-file" );
+            auto waves_fn = path/dict.get<std::string>( "wavelengths-file" );
+            auto metals_fn = path/dict.get<std::string>( "metallicities-file" );
+            auto ssp_fn = path/dict.get<std::string>( "single-stellar-population-model" );
 
             // Prepare the SSP.
             _ssp.load( ages_fn, waves_fn, metals_fn, ssp_fn );
@@ -174,12 +197,12 @@ namespace tao {
       protected:
 
          backend_type* _be;
-         const simulation* _sim;
+         tao::simulation const* _sim;
          stellar_population _ssp;
          age_line<real_type> _snap_ages;
          sfh _sfh;
-         vector<real_type> _age_masses, _bulge_age_masses;
-         // vector<real_type> _age_metals;
+         std::vector<real_type> _disk_age_masses;
+         std::vector<real_type> _bulge_age_masses;
       };
 
    }

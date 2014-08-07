@@ -24,11 +24,11 @@ public:
 	 ( "sage,s", hpc::po::value<hpc::fs::path>( &_sage_dir )->required(), "SAGE output directory" )
          ( "param,p", hpc::po::value<hpc::fs::path>( &_param_fn )->required(), "SAGE parameter file" )
          ( "alist,a", hpc::po::value<hpc::fs::path>( &_alist_fn )->required(), "SAGE expansion list file" )
-         ( "output,o", hpc::po::value<hpc::fs::path>( &_out_fn )->required(), "output file" )
+         ( "output,o", hpc::po::value<hpc::fs::path>( &_out_fn ), "output file" )
          ( "treeidx", hpc::po::value<unsigned>( &_treeidx ), "" )
          ( "lidx", hpc::po::value<unsigned>( &_lidx ), "" )
          ( "fileidx", hpc::po::value<unsigned>( &_fileidx ), "" )
-         ( "filez", hpc::po::value<unsigned>( &_filez ), "" )
+         ( "filez", hpc::po::value<unsigned>( &_filez )->default_value( 0 ), "" )
          ( "verbose,v", hpc::po::value<int>( &_verb )->default_value( 0 ), "verbosity" );
       positional_options().add( "sage", 1 );
       positional_options().add( "param", 2 );
@@ -38,11 +38,10 @@ public:
       // Parse options.
       parse_options( argc, argv );
       EXCEPT( _mode == "convert" || _mode == "check" ||
-              _mode == "find" || _mode == "show", "Invalid mode." );
+              _mode == "find" || _mode == "show" || _mode == "count", "Invalid mode." );
       EXCEPT( !_sage_dir.empty(), "No SAGE output directory given." );
       EXCEPT( !_param_fn.empty(), "No SAGE parameter file given." );
       EXCEPT( !_alist_fn.empty(), "No SAGE expansion file given." );
-      EXCEPT( !_out_fn.empty(), "No output file given." );
 
       // Setup logging.
       hpc::log::levels_type lvl;
@@ -72,11 +71,15 @@ public:
 	 find();
       else if( _mode == "show" )
 	 show();
+      else if( _mode == "count" )
+	 count();
    }
 
    void
    convert()
    {
+      EXCEPT( !_out_fn.empty(), "No output file given." );
+
       _load_param( _param_fn );
       _load_redshifts( _alist_fn );
       std::array<size_t,2> idx_rng = _sage_idx_rng();
@@ -409,6 +412,37 @@ public:
          std::cout << "Merge into snapshot: " << gal.mergeIntoSnapNum << "\n";
 	 std::cout << "Spin:                (" << gal.Spin[0] << ", " << gal.Spin[1] << ", " << gal.Spin[2] << ")\n";
       }
+   }
+
+   ///
+   /// Count objects at a particular snapshot.
+   ///
+   void
+   count()
+   {
+      _load_param( _param_fn );
+      _load_redshifts( _alist_fn );
+
+      std::array<size_t,2> idx_rng = _sage_idx_rng();
+      LOGILN( "Processing range: ", idx_rng );
+
+      unsigned long long tot_gals = 0;
+      for( size_t ii = idx_rng[0]; ii < idx_rng[1]; ++ii )
+      {
+	 std::vector<std::ifstream> files = _open_files( ii );
+	 int n_gals, n_trees;
+	 files[_filez].read( (char*)&n_trees, sizeof(n_trees) );
+	 files[_filez].read( (char*)&n_gals, sizeof(n_gals) );
+	 std::vector<int> n_tree_gals( n_trees );
+	 files[_filez].read( (char*)n_tree_gals.data(), n_trees*sizeof(int) );
+	 tot_gals += std::accumulate<std::vector<int>::const_iterator,unsigned long long>( n_tree_gals.begin(), n_tree_gals.end(), 0 );
+      }
+
+      // Reduce.
+      tot_gals = _comm->all_reduce( tot_gals );
+
+      if( _comm->rank() == 0 )
+         std::cout << "Galaxies in snapshot " << _filez << ": " << tot_gals << "\n";
    }
 
    void

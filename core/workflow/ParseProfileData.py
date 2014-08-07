@@ -13,14 +13,14 @@ class ParseProfileData(object):
 
     
 
-    def __init__(self,JobPath,SubProcessID,Options):        
+    def __init__(self,JobPath,SubProcessID,Options,DatabaseName):        
         self.ProfileFileName=JobPath+"/params"+str(SubProcessID)+"_tao.Profile.log00000"
         logging.info("Profile FileName:"+self.ProfileFileName)
         self.Options=Options
         self.RunProfiling(JobPath,SubProcessID)
         
         
-        self.LoadDBMetaData("millennium_full_hdf5_dist")
+        self.LoadDBMetaData(DatabaseName)
         
     def LoadDBMetaData(self,DatabaseName):
         self.serverip=self.Options['PGDB:serverip']
@@ -70,14 +70,26 @@ class ParseProfileData(object):
     def RunProfiling(self,JobPath,SubJobIndex):
         #stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(path.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
         os.chdir(JobPath)
+        
+        FileName = os.path.join(JobPath, "runprofile.sh")
+        
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
         ProfilingExecPath=self.Options['Torque:ProfilingExecutableName']
         XMlParamsPath=JobPath+"/params"+str(SubJobIndex)+".xml"
         self.ListofModules=self.ParseXMLParams(XMlParamsPath)
-        CommandTxt=ProfilingExecPath+" "+XMlParamsPath+" "+BasicSettingPath
+        ModulesStr="module load python fftw/x86_64/gnu/3.3.2-threaded gcc/4.7.1 cmake boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql cfitsio/x86_64/gnu/3.290-threaded skymaker"
+        CommandTxt="mpirun "+ ProfilingExecPath+" "+XMlParamsPath+" "+BasicSettingPath
         logging.info("Profiling String:"+CommandTxt)
         logging.info(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
-        stdout = subprocess.check_output(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
+        
+        with open(FileName, 'w') as script:
+            #script.write("#!/bin/bash\n")
+            script.write("source /usr/local/modules/init/bash\n")
+            script.write(ModulesStr+"\n")
+            script.write(CommandTxt)
+        
+        #stdout = subprocess.check_output(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
+        stdout = subprocess.check_output(shlex.split("sh runprofile.sh".encode(locale.getpreferredencoding())))
         os.remove(JobPath+"/tao.log."+str(SubJobIndex))
         logging.info("Profiling Execution Done")
             
@@ -89,6 +101,7 @@ class ParseProfileData(object):
         GalaxiesCount=0
         TotalTrees=0
         self.BoxesList=[]
+        logging.info(self.resultsdict)
         for line in Lines:
             LineParts=line.split(':')
             if LineParts[1].strip()=='Boxes':
@@ -97,6 +110,7 @@ class ParseProfileData(object):
                 TablesList=self.GetTables(LineParts[2])
                 SumTables=SumTables+len(TablesList)
                 for Table in TablesList:
+                    print Table
                     GalaxiesCount=GalaxiesCount+self.resultsdict[Table][1]
                     TotalTrees=TotalTrees+self.resultsdict[Table][2]
          

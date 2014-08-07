@@ -211,7 +211,7 @@ namespace tao {
    {
       LOGBLOCKI( "Loading stellar population from: ", filename );
 
-      std::ifstream file( filename.c_str() );
+      std::ifstream file( filename.native() );
       EXCEPT( file.is_open(), "Couldn't find SSP file: ", filename );
 
 #if 0

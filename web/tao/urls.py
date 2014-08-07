@@ -14,6 +14,10 @@ from django.contrib import admin
 
 from tastypie.api import Api
 from tao.api.resources import WorkflowCommandResource, JobResource, TaoUserResource, WFJobResource
+<<<<<<< HEAD
+=======
+from tao.api.resources import PowerJobResource
+>>>>>>> work
 from tao.forms import PasswordResetForm
 from tao.views import password_change
 
@@ -46,6 +50,11 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^(?P<id>\d+)$', 'view_job', name='view_job'),
     url(r'^(?P<id>\d+)/file/(?P<file_path>.+)$', 'get_file', name='get_file'),
     url(r'^(?P<id>\d+)/download_zip$', 'get_zip_file', name='get_zip_file'),
+<<<<<<< HEAD
+=======
+    url(r'^(?P<id>\d+)/download_tar$', 'get_tar_file', name='get_tar_file'),
+    url(r'^(?P<id>\d+)/basic_tar$', 'basic_tar_file', name='basic_tar_file'),
+>>>>>>> work
     url(r'^(?P<id>\d+)/summary_txt$', 'get_summary_txt_file', name='get_summary_txt_file'),
     url(r'^stop_job/(?P<id>\d+)$', 'stop_job', name='stop_job'),
     url(r'^rerun_job/(?P<id>\d+)$', 'rerun_job', name='rerun_job'),
@@ -73,6 +82,7 @@ json_patterns = patterns('tao.json.views',
 v1_api = Api(api_name='v1')
 v1_api.register(WorkflowCommandResource())
 v1_api.register(JobResource())
+v1_api.register(PowerJobResource())
 v1_api.register(TaoUserResource())
 v1_api.register(WFJobResource())
 
@@ -98,8 +108,16 @@ urlpatterns = patterns('',
     url(r'^accounts/password/change/$', password_change, {'post_change_redirect': reverse_lazy('password_change_done')},
         name='password_change'),
     url(r'^accounts/password/change/done/$', password_change_done, name='password_change_done'),
+<<<<<<< HEAD
 
     ('^tap/', include('tap.urls')),
+=======
+    url('^acknowledgements/', simple_view, {'template_name': 'acknowledgements.html'}, name='acknowledgements'),
+    url('^about/', simple_view, {'template_name': 'about.html'}, name='about'),
+
+    ('^tap/', include('tap.urls')),
+    
+>>>>>>> work
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

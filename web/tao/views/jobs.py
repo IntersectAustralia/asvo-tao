@@ -5,17 +5,31 @@ from django.core.urlresolvers import reverse
 from django.http import StreamingHttpResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader, Context, RequestContext
+<<<<<<< HEAD
+=======
+from django.views.decorators.csrf import csrf_exempt
+>>>>>>> work
 
 from tao.datasets import dataset_get
 from tao.decorators import researcher_required, set_tab, \
     object_permission_required
+<<<<<<< HEAD
 from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel, WorkflowCommand
+=======
+from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel, WorkflowCommand,GlobalParameter
+>>>>>>> work
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
 from tao.utils import output_formats
 
+<<<<<<< HEAD
 
 import os, StringIO
+=======
+from tap.decorators import http_auth, access_job
+
+import os, StringIO, subprocess
+>>>>>>> work
 import zipstream, html2text
 
 @researcher_required
@@ -47,8 +61,6 @@ def get_file(request, id, file_path):
         raise Http404
     
     job_file = the_one[0]
-    if not job_file.can_be_downloaded():
-        raise PermissionDenied
 
     response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)), mimetype='application/force-download')
 
@@ -129,13 +141,21 @@ def _get_summary_as_text(id):
 
     job = Job.objects.get(pk=id)
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
+<<<<<<< HEAD
 
+=======
+    TAO_acknowledgement= html2text.html2text(GlobalParameter.objects.get(parameter_name='tao_acknowledgement').parameter_value)
+>>>>>>> work
     if ui_holder.job_type == UIModulesHolder.SQL_JOB:
         txt_template = loader.get_template('jobs/sql_job-summary.txt')
         query = ui_holder.raw_data('sql_job', 'query')
         dataset = ui_holder.dataset
         simulation = dataset.simulation
         galaxy_model = dataset.galaxy_model
+<<<<<<< HEAD
+=======
+        
+>>>>>>> work
         output_properties = []
         for output_property in ui_holder.raw_data('sql_job', 'output_properties'):
             output_properties = output_properties + [(output_property['label'], output_property['units'])]
@@ -144,12 +164,21 @@ def _get_summary_as_text(id):
             if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
                 output_format = x['text']
         context = Context({
+<<<<<<< HEAD
+=======
+            'TAO_acknowledgement':html2text.html2text(TAO_acknowledgement),        
+>>>>>>> work
             'query': query,
             'dark_matter_simulation': simulation,
             'simulation_details': html2text.html2text(simulation.details),
             'galaxy_model': galaxy_model,
             'galaxy_model_details': html2text.html2text(galaxy_model.details),
             'output_properties': output_properties,
+<<<<<<< HEAD
+=======
+            'simulation_acknowledgement': html2text.html2text(simulation.acknowledgement_txt),
+            'galaxy_model_acknowledgement': html2text.html2text(galaxy_model.acknowledgement_txt),
+>>>>>>> work
             'output_format': output_format,})
     else:
         geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
@@ -169,20 +198,43 @@ def _get_summary_as_text(id):
 
         txt_template = loader.get_template('jobs/light_cone_job-summary.txt')
         context = Context({
+<<<<<<< HEAD
             'catalogue_geometry': geometry,
             'dark_matter_simulation': simulation,
             'simulation_details': html2text.html2text(simulation.details),
             'galaxy_model': galaxy_model,
             'galaxy_model_details': html2text.html2text(galaxy_model.details),
+=======
+            'TAO_acknowledgement':html2text.html2text(TAO_acknowledgement),
+            'catalogue_geometry': geometry,
+            'dark_matter_simulation': simulation,
+            'simulation_details': html2text.html2text(simulation.details),
+            'simulation_acknowledgement': html2text.html2text(simulation.acknowledgement_txt),
+            'galaxy_model': galaxy_model,
+            'galaxy_model_details': html2text.html2text(galaxy_model.details),
+            'galaxy_model_acknowledgement': html2text.html2text(galaxy_model.acknowledgement_txt),
+>>>>>>> work
             'output_properties': output_properties,
             'record_filter': display_selection(ui_holder.raw_data('record_filter', 'filter'), ui_holder.raw_data('record_filter', 'min'), ui_holder.raw_data('record_filter', 'max')),
             'output_format': output_format,
         })
         if geometry == 'light-cone':
+<<<<<<< HEAD
             ra_opening_angle = ui_holder.raw_data('light_cone', 'ra_opening_angle')
             dec_opening_angle = ui_holder.raw_data('light_cone', 'dec_opening_angle')
             context['ra_opening_angle'] = ra_opening_angle
             context['dec_opening_angle'] = dec_opening_angle
+=======
+            ra_min_angle = ui_holder.raw_data('light_cone', 'ra_min')
+            dec_min_angle = ui_holder.raw_data('light_cone', 'dec_min')
+            ra_max_angle = ui_holder.raw_data('light_cone', 'ra_max')
+            dec_max_angle = ui_holder.raw_data('light_cone', 'dec_max')
+            context['ra_min_angle'] = ra_min_angle
+            context['dec_min_angle'] = dec_min_angle
+            context['ra_max_angle'] = ra_max_angle
+            context['dec_max_angle'] = dec_max_angle
+            
+>>>>>>> work
             context['redshift_min'] = ui_holder.raw_data('light_cone', 'redshift_min')
             context['redshift_max'] = ui_holder.raw_data('light_cone', 'redshift_max')
             context['number_of_light_cones'] = ui_holder.raw_data('light_cone', 'number_of_light_cones')
@@ -210,9 +262,35 @@ def _get_summary_as_text(id):
             context['apply_sed'] = False
         if ui_holder.raw_data('mock_image', 'apply_mock_image'):
             context['number_of_images'] = ui_holder.raw_data('mock_image', 'TOTAL_FORMS')
+<<<<<<< HEAD
         else:
             context['number_of_images'] = None
 
+=======
+            images = []
+            for i in xrange(0, context['number_of_images']):
+                image = {} 
+                image['fov_dec'] = ui_holder.raw_data('mock_image', '%d-fov_dec' % i)
+                image['sub_cone'] = ui_holder.raw_data('mock_image', '%d-sub_cone' % i)
+                image['height'] = ui_holder.raw_data('mock_image', '%d-height' % i)
+                image['origin_ra'] = ui_holder.raw_data('mock_image', '%d-origin_ra' % i)
+                image['min_mag'] = ui_holder.raw_data('mock_image', '%d-min_mag' % i)
+                image['origin_dec'] = ui_holder.raw_data('mock_image', '%d-origin_dec' % i)
+                image['width'] = ui_holder.raw_data('mock_image', '%d-width' % i)
+                image['z_min'] = ui_holder.raw_data('mock_image', '%d-z_min' % i)
+                image['max_mag'] = ui_holder.raw_data('mock_image', '%d-max_mag' % i)
+                image['z_max'] = ui_holder.raw_data('mock_image', '%d-z_max' % i)
+                image['fov_ra'] = ui_holder.raw_data('mock_image', '%d-fov_ra' % i)
+                image['format'] = ui_holder.raw_data('mock_image', '%d-format' % i)
+                mag_fields = ui_holder.raw_data('mock_image','%d-mag_field' % i).split('_')
+                mag_field = BandPassFilter.objects.get(pk=mag_fields[0]).label
+                mag_field += ' (%s)' % mag_fields[1].title()
+                image['mag_field'] = mag_field
+                images.append(image)
+            context['images'] = images
+        else:
+            context['number_of_images'] = None
+>>>>>>> work
     return txt_template.render(context)
 
 @researcher_required
@@ -236,6 +314,7 @@ def get_zip_file(request, id):
     filename = 'tao_%s_catalogue_%d.zip' % (job.user.username, job.id)
     response = StreamingHttpResponse(streaming_content=archive, content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="%s"' % (filename,)
+<<<<<<< HEAD
     return response
 
 
@@ -247,6 +326,69 @@ def get_summary_txt_file(request, id):
     response.write(_get_summary_as_text(id))
     return response
 
+=======
+    return response
+
+def stream_from_pipe(command):
+    pipe = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    content = None
+    while content != '':
+        content = pipe.stdout.read(1024)
+        yield content
+    
+def summary_temp_location(job):
+    tmp_dir      = os.path.dirname(settings.SUMMARY_TMP)
+    job_tmp_dir  = os.path.join(tmp_dir, str(job.id))
+    summary_path = os.path.join(job_tmp_dir, 'summary.txt')
+    
+    if not os.path.isfile(summary_path):
+        mode = 0700
+        if not os.path.isdir(tmp_dir):
+            os.mkdir(tmp_dir)
+            os.chmod(tmp_dir, mode)
+        if not os.path.isdir(job_tmp_dir):
+            os.mkdir(job_tmp_dir)
+            os.chmod(job_tmp_dir, mode)
+            
+        summary_text = _get_summary_as_text(job.id).encode('utf8')
+        f = open(summary_path, "w")
+        f.write(summary_text)
+        f.close()
+    
+    return job_tmp_dir
+
+@researcher_required
+@object_permission_required('can_read_job')
+def get_tar_file(request, id):
+    return _get_tar_file(request, id)
+
+
+def _get_tar_file(request, id):
+    job = Job.objects.get(pk=id)
+    summary_dir = summary_temp_location(job)
+    output_path = os.path.dirname(os.path.join(settings.FILES_BASE, job.output_path, 'output'))
+    tar_command = ['tar', '-cf', '-', '-C', output_path, '.', '-C', summary_dir, '.']
+    response = StreamingHttpResponse(streaming_content=stream_from_pipe(tar_command), 
+                                     content_type='application/x-tar')
+    response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.tar"' % (job.username(), job.id)
+    return response
+
+@csrf_exempt
+@http_auth
+def basic_tar_file(request, id):
+    "Allow download with basic auth"
+    return _get_tar_file(request, id)
+
+
+@researcher_required
+@object_permission_required('can_read_job')
+def get_summary_txt_file(request, id):
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="summary.txt"'
+    response.write(_get_summary_as_text(id))
+    return response
+
+>>>>>>> work
 STATUS_ORDERING = {
     'HELD': 0,
     'SUBMITTED': 1,
@@ -313,8 +455,13 @@ def delete_job_output(request, id):
                 submitted_by=request.user,
                 execution_status='SUBMITTED')
         job_output_delete_command.save()
+<<<<<<< HEAD
 
     return HttpResponse('{}', mimetype='application/json')
+=======
+    response = '{{"next_url":"{0}"}}'.format(reverse('job_index'))
+    return HttpResponse(response, mimetype='application/json')
+>>>>>>> work
 
 @researcher_required
 @object_permission_required('can_write_job')

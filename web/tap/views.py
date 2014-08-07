@@ -37,8 +37,14 @@ def tables(request):
     data_types = dict([(i,t) for i,t in models.DataSetProperty.DATA_TYPES])
     for dataset in available_datasets:
         properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id, 
+<<<<<<< HEAD
             is_output = True).order_by('group', 'order', 'label')
         dataset_properties.append({"name": dataset.database, "properties": properties})
+=======
+            is_output = True,is_computed=False).order_by('group', 'order', 'label')
+        DatasetName= str(dataset.simulation.name).replace('-','_') +'__'+ str(dataset.galaxy_model.name)
+        dataset_properties.append({"name":DatasetName , "properties": properties})
+>>>>>>> work
         
     return render(request, 'tap/tables.xml', 
                   {'datasets': dataset_properties, 'data_types': data_types})
@@ -144,7 +150,11 @@ def results(request, id, job):
         if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
     
+<<<<<<< HEAD
     if (not job_file) or (not job_file.can_be_downloaded()):
+=======
+    if not job_file:
+>>>>>>> work
         return HttpResponseBadRequest('File not found')
     
     return render(request, 'tap/results.xml', {'download_link': "%s/result/%s" % 
@@ -172,8 +182,13 @@ def executionduration(request, id, job):
     
     return render(request, 'tap/http_response.html', {'message': EXECUTION_DURATION})
 
+<<<<<<< HEAD
 def make_parameters_xml(request):
     query = prepare_query(request.POST['QUERY'])
+=======
+def make_parameters_xml(request,query):
+    query = prepare_query(query)
+>>>>>>> work
     
     dataset    = parse_dataset_name(query)
     fields     = parse_fields(query, dataset)
@@ -201,16 +216,30 @@ def make_parameters_xml(request):
     sql.set('id', '1')
     
     query_node = etree.SubElement(sql, 'query')
+<<<<<<< HEAD
     query_node.text = query.replace(dataset['name'], '-table-')
+=======
+    query_node.text = query.replace(dataset['label'], '-table-')
+>>>>>>> work
     
     simulation_node = etree.SubElement(sql, 'simulation')
     simulation_node.text = dataset['simulation']
     
     galaxy_model_node = etree.SubElement(sql, 'galaxy-model')
     galaxy_model_node.text = dataset['galaxy_model']
+<<<<<<< HEAD
     
     limit_node = etree.SubElement(sql, 'limit')
     limit_node.text = limit
+=======
+
+    if limit is not None:
+        limit_node = etree.SubElement(sql, 'limit')
+        limit_node.text = limit
+    else:# If the user didn't specify Maximum Records, We will return the first 1 Million Only!
+        limit_node = etree.SubElement(sql, 'limit')
+        limit_node.text = str(TAP_MAXIMUM_RECORDCOUNT)    	
+>>>>>>> work
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -263,7 +292,11 @@ def stream_job_results(request, job):
         if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
         
+<<<<<<< HEAD
     if (not job_file) or (not job_file.can_be_downloaded()):
+=======
+    if not job_file:
+>>>>>>> work
         job.error_message += "Can't get the job file.\n"
         job.save()
         return HttpResponseBadRequest('File not found')
@@ -275,17 +308,50 @@ def stream_job_results(request, job):
     return response
 
 def createTAPjob(request):
+<<<<<<< HEAD
     parameters = make_parameters_xml(request)
     
     job = models.Job(user=request.user, parameters=parameters)
+=======
+    job = models.Job(user=request.user)
+    
+    
+    
+    
+>>>>>>> work
     
     errors = check_query(request.POST['QUERY'])
     if errors != '':
         job.error_message = errors
         job.status = models.Job.ERROR
     else:
+<<<<<<< HEAD
         dataset = parse_dataset_name(request.POST['QUERY'])
         job.database = dataset['name']
+=======
+        
+        dataset = parse_dataset_name(request.POST['QUERY'])
+        job.database = dataset['name']
+        #################################################################################################################
+		
+        Query=request.POST['QUERY']
+        
+        regex = re.compile('^(SELECT\s+TOP\s+[0-9]+\s+|SELECT\s+)(.*?)\s+FROM', re.I|re.M)   
+        found = regex.findall(Query)	    
+        # If the user used * - Replace it with all fields and continue parsing
+        if found and found[0][1]=='*':
+        	dataset = models.DataSet.objects.get(database=dataset['name'])
+        	properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id,is_output = True,is_computed=False).order_by('group', 'order', 'label')
+        	FieldsListStr=""
+        	for prop in properties:
+        		FieldsListStr=FieldsListStr+prop.name+","
+        	FieldsListStr=FieldsListStr[:-1]
+        	Query=Query.replace(found[0][1],FieldsListStr)        
+        #################################################################################################################
+        
+        job.parameters = make_parameters_xml(request,Query)
+    
+>>>>>>> work
         
     job.save()
     
@@ -299,4 +365,8 @@ def deleteTAPJob(job, action='Deleted'):
     job.error_message = "%s by user.\n" % action
     job.save()
     
+<<<<<<< HEAD
     
+=======
+    
+>>>>>>> work

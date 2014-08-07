@@ -265,6 +265,7 @@ namespace tao {
 
                // Store the field names.
                _bpf_names[ii] = fn;
+	       hpc::to_lower( (std::string&)_bpf_names[ii] );
                LOGDLN( "Adding filter by the name: ", _bpf_names[ii] );
                ++ii;
             }

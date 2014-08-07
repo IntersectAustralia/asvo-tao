@@ -6,12 +6,12 @@
       <geometry>light-cone</geometry>
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
-      <redshift-min>0.01</redshift-min>
+      <redshift-min>0.04</redshift-min>
       <redshift-max>0.4</redshift-max>
       <ra-min>0</ra-min>
-      <ra-max>20</ra-max>
+      <ra-max>10</ra-max>
       <dec-min>0</dec-min>
-      <dec-max>20</dec-max>
+      <dec-max>10</dec-max>
       <output-fields>
         <item>posx</item>
         <item>posy</item>
@@ -37,7 +37,8 @@
         <item>sed</item>
       </parents>
       <bandpass-filters>
-        <item>v.dat</item>
+        <item>Johnson/Johnson_V.dati</item>
+        <item>Johnson/Johnson_U.dati</item>
       </bandpass-filters>
     </filter>
 
@@ -47,25 +48,33 @@
       </parents>
       <images>
         <item>
-          <mag_field>v.dat_apparent</mag_field>
-          <origin_ra>10</origin_ra>
-          <origin_dec>10</origin_dec>
-          <fov_ra>18</fov_ra>
-          <fov_dec>18</fov_dec>
+          <mag_field>Johnson/Johnson_V.dati_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
         </item>
+	<item>
+          <mag_field>Johnson/Johnson_U.dati_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
+	</item>
       </images>
     </skymaker>
 
     <csv id="csv">
       <parents>
-        <item>filter</item>
+	<item>filter</item>
       </parents>
       <filename>result</filename>
       <fields>
-        <item>posx</item>
-        <item>posy</item>
-        <item>posz</item>
-        <item>v.dat_apparent</item>
+	<item>posx</item>
+	<item>posy</item>
+	<item>posz</item>
+	<item>Johnson/Johnson_V.dati_apparent</item>
+	<item>Johnson/Johnson_U.dati_apparent</item>
       </fields>
     </csv>
 
@@ -74,5 +83,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_galacticus_2</database>
+  <database>millennium_full_3servers_v4</database>
 </tao>

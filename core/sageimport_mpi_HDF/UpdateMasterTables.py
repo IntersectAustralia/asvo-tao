@@ -42,7 +42,16 @@ class MasterTablesUpdate:
                InsertSt="INSERT INTO Snap_redshift Values ("+str(CurrentSnapNum)+","+str(RedShifList[i])+");"
                
                self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertSt)
-    
+    def SetupSecurity(self):
+        
+        UserName=self.Options['PGDB:ScienceModuleDBUserName']
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("GRANT CONNECT ON DATABASE "+self.DBConnection.DBName+" to "+UserName+";")
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("REVOKE ALL ON ALL TABLES IN SCHEMA public From "+UserName+";")
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("GRANT SELECT ON ALL TABLES IN SCHEMA public to "+UserName+";")
+        
+        
+        
+        
         
         
         

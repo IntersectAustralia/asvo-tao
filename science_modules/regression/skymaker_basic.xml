@@ -6,7 +6,7 @@
       <geometry>light-cone</geometry>
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
-      <redshift-min>0.01</redshift-min>
+      <redshift-min>0.0</redshift-min>
       <redshift-max>0.06</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
@@ -44,7 +44,6 @@
       <parents>
         <item>filter</item>
       </parents>
-      <keep-files>1</keep-files>
       <images>
         <item>
           <mag_field>Johnson/Johnson_V.dati_apparent</mag_field>
@@ -93,5 +92,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_3servers_v3</database>
+  <database>millennium_mini_3servers_v4</database>
 </tao>

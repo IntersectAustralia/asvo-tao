@@ -6,6 +6,10 @@ tao.forms
 Settings for development environment
 """
 from django import forms
+<<<<<<< HEAD
+=======
+from django.contrib.auth.forms import PasswordChangeForm
+>>>>>>> work
 from django.conf import settings
 from django.contrib.auth import forms as auth_forms, get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -31,6 +35,21 @@ class FormsGraph():
     TELESCOPE_ID = '7'
 
 
+<<<<<<< HEAD
+=======
+class TaoPasswordChangeForm(PasswordChangeForm):
+
+    def clean_new_password1(self):
+        if hasattr(super(TaoPasswordChangeForm, self), 'clean_new_password1'):
+            password1 = super(TaoPasswordChangeForm, self).clean_new_password1()
+        else:
+            password1 = self.cleaned_data['new_password1']
+        if len(password1) < settings.MIN_PASSWORD_LENGTH:
+            raise forms.ValidationError(_('Password must be at least %d characters long') % settings.MIN_PASSWORD_LENGTH)
+        return password1
+
+
+>>>>>>> work
 class PasswordResetForm(auth_forms.PasswordResetForm):
     username = forms.CharField(max_length=254, label=_("Username"), required=True)
 
@@ -179,8 +198,8 @@ class UserCreationForm(forms.Form):
         if self.is_aaf():
             return ''
         password = self.cleaned_data.get('password1')
-        if len(password) < 8:
-            raise ValidationError(_('Password must be at least 8 characters long'))
+        if len(password) < settings.MIN_PASSWORD_LENGTH:
+            raise ValidationError(_('Password must be at least %d characters long') % settings.MIN_PASSWORD_LENGTH)
         return password
 
     def clean_password2(self):
@@ -232,5 +251,5 @@ class RejectForm(forms.Form):
 
 
 class SupportForm(forms.Form):
-    subject = forms.CharField(max_length=80, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
-    message = forms.CharField(widget=forms.Textarea(), validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+    subject = forms.CharField(widget=forms.TextInput(attrs={'cols':30, 'style':'width:50%;'}),max_length=100, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows':15, 'cols':50, 'style':'width:75%;'}), validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)

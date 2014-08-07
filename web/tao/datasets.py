@@ -180,7 +180,7 @@ def galaxy_model_from_xml(galaxy_model_name):
 
 def data_set_property_from_xml(data_set, label, name):
     try:
-        obj = models.DataSetProperty.objects.get(dataset=data_set, label=label, name=name)
+        obj = models.DataSetProperty.objects.get(dataset=data_set, name=name)
         return obj
     except models.DataSetProperty.DoesNotExist:
         return None

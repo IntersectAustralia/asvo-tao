@@ -74,6 +74,12 @@ namespace tao {
 	 {
 	    // Extract cosmology.
 	    real_type box_size, hubble, omega_m, omega_l;
+#ifndef NDEBUG
+	    box_size = -1.0;
+	    hubble = -1.0;
+	    omega_m = -1.0;
+	    omega_l = -1.0;
+#endif
 	    session() << "SELECT metavalue FROM metadata WHERE metakey='boxsize'",
 	       soci::into( box_size );
 	    session() << "SELECT metavalue FROM metadata WHERE metakey='hubble'",
@@ -82,6 +88,10 @@ namespace tao {
 	       soci::into( omega_m );
 	    session() << "SELECT metavalue FROM metadata WHERE metakey='omega_l'",
 	       soci::into( omega_l );
+	    ASSERT( box_size > 0.0, "Invalid box size." );
+	    ASSERT( hubble > 0.0, "Invalid Huble constant." );
+	    ASSERT( omega_m > 0.0, "Invalid OmegaM constant." );
+	    ASSERT( omega_l > 0.0, "Invalid OmegaL constant." );
 
             // Extract the list of redshift snapshots from the backend to
             // be set on the simulation.
@@ -97,6 +107,7 @@ namespace tao {
          {
             unsigned size;
             session() << "SELECT COUNT(*) FROM snap_redshift", soci::into( size );
+	    ASSERT( size > 0, "Unable to locate redshift information." );
             snap_zs.resize( size );
             session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapnum" ),
                soci::into( (std::vector<real_type>&)snap_zs );
@@ -327,13 +338,13 @@ namespace tao {
             this->_field_map["pos_x"] = "posx";
             this->_field_map["pos_y"] = "posy";
             this->_field_map["pos_z"] = "posz";
-            // this->_field_map["vel_x"] = "velx";
-            // this->_field_map["vel_y"] = "vely";
-            // this->_field_map["vel_z"] = "velz";
-            // this->_field_map["snapshot"] = "snapnum";
-            // this->_field_map["global_index"] = "globalindex";
-            // this->_field_map["global_tree_id"] = "globaltreeid";
-            // this->_field_map["local_galaxy_id"] = "localgalaxyid";
+            this->_field_map["vel_x"] = "velx";
+            this->_field_map["vel_y"] = "vely";
+            this->_field_map["vel_z"] = "velz";
+            this->_field_map["snapshot"] = "snapnum";
+            this->_field_map["global_index"] = "globalindex";
+            this->_field_map["global_tree_id"] = "globaltreeid";
+            this->_field_map["local_galaxy_id"] = "localgalaxyid";
 
 	    // Add calculated types.
 	    this->_field_types.emplace( "redshift_cosmological", batch<real_type>::DOUBLE );
@@ -341,6 +352,7 @@ namespace tao {
 	    this->_field_types.emplace( "ra", batch<real_type>::DOUBLE );
 	    this->_field_types.emplace( "dec", batch<real_type>::DOUBLE );
 	    this->_field_types.emplace( "distance", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "sfr", batch<real_type>::DOUBLE );
 
             // Make sure we have all the essential fields available. Do this by
             // checking that all the mapped fields exist in the field types.
@@ -646,7 +658,7 @@ namespace tao {
 
             // If we found some rows perform any calculated field updates.
             if( rows_exist )
-              _calc_fields();
+	       _calc_fields();
 
             // Return whether we got any rows.
             return rows_exist;
@@ -666,6 +678,9 @@ namespace tao {
            auto ra = _bat->template scalar<real_type>( "ra" );
            auto dec = _bat->template scalar<real_type>( "dec" );
            auto dist = _bat->template scalar<real_type>( "distance" );
+	   auto disk_sfr = _bat->template scalar<real_type>( "sfrdisk" );
+	   auto bulge_sfr = _bat->template scalar<real_type>( "sfrbulge" );
+	   auto sfr = _bat->template scalar<real_type>( "sfr" );
            for( unsigned ii = 0; ii < _bat->size(); ++ii )
            {
               if( _lc )
@@ -700,14 +715,17 @@ namespace tao {
                  dec[ii] = to_degrees( dec[ii] );
 
                  // Calculate observed redshift.
-                 if( dist[ii] > 0.0 )
-                 {
-                    std::array<real_type,3> rad_vec{ { pos_x[ii]/dist[ii], pos_y[ii]/dist[ii], pos_z[ii]/dist[ii] } };
-                    real_type dist_z = dist[ii] + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/h0)*(h0/100.0);
-                    z_obs[ii] = _lc->distance_to_redshift( dist_z );
-                 }
-                 else
-                    z_obs[ii] = 0.0;
+                 z_obs[ii] = observed_redshift(
+		    z_cos[ii],
+                    { pos_x[ii], pos_y[ii], pos_z[ii] },
+                    { vel_x[ii], vel_y[ii], vel_z[ii] },
+		    _lc->simulation()->hubble()
+                    );
+                 // z_obs[ii] = approx_observed_redshift(
+                 //    *_lc,
+                 //    { pos_x[ii], pos_y[ii], pos_z[ii] },
+                 //    { vel_x[ii], vel_y[ii], vel_z[ii] }
+                 //    );
               }
 	      else
 	      {
@@ -716,6 +734,9 @@ namespace tao {
 		 z_cos[ii] = _box->redshift();
 		 z_obs[ii] = _box->redshift();
 	      }
+
+	      // Combine disk and bulge SFRs.
+	      sfr[ii] = disk_sfr[ii] + bulge_sfr[ii];
            }
         }
 

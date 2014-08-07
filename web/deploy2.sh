@@ -45,12 +45,19 @@ echo "Deploying to $ENVIRONMENT version $TAG to $TARGET"
 }
 
 # backup master db
-backupdb() {
+backup_db() {
   echo "Backup up master db..."
   cd $TARGET/asvo-tao/web
   ./manage.py dumpscript > $BACKUP_DIR/masterdb.py
 }
 
+migrate_db() {
+  echo "Migrate DB >>> "
+  cd $TARGET/asvo-tao/web
+  ./manage.py syncdb
+  ./manage.py sync_rules
+  ./manage.py migrate 
+}
 # checks out code into TARGET
 checkout() {
   cd $TARGET
@@ -106,9 +113,11 @@ remote_restore() {
 
 check_params
 
-backupdb
+backup_db
 
 checkout
+
+migrate_db
 
 environment_setup
 

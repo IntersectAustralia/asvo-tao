@@ -7,7 +7,7 @@
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
-      <redshift-max>0.06</redshift-max>
+      <redshift-max>0.1</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>
@@ -19,6 +19,7 @@
         <item>coldgas</item>
         <item>metalscoldgas</item>
         <item>diskscaleradius</item>
+	<item>SfrDiskZ</item>
       </output-fields>
     </light-cone>
 
@@ -50,6 +51,30 @@
       </bandpass-filters>
     </filter>
 
+    <skymaker id="skymaker">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <images>
+        <item>
+          <mag_field>Johnson/Johnson_V.dati_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
+        </item>
+      </images>
+      <images>
+        <item>
+          <mag_field>Johnson/Johnson_U.dati_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
+        </item>
+      </images>
+    </skymaker>
+
     <csv id="csv">
       <parents>
         <item>filter</item>
@@ -60,6 +85,7 @@
         <item>posx</item>
         <item>posy</item>
         <item>posz</item>
+	<item>SfrDiskZ</item>
 	<item>redshift_cosmological</item>
         <item>Johnson/Johnson_V.dati_apparent</item>
         <item>Johnson/Johnson_U.dati_apparent</item>
@@ -72,5 +98,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_balanced_v3</database>
+  <database>millennium_mini_3servers_v4</database>
 </tao>

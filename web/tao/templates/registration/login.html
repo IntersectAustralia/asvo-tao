@@ -1,42 +1,51 @@
 {% extends '_base.html' %}
 {% load bootstrap_tags %}
 {% load assets %}
+{% load static %}
 {% block subtitle %}
     Login
 {% endblock %}
 {% block content %}
     {% if next %}
-        You need to login to continue.
+    <div class="alert alert-info">  
+        You need to login to continue.         
+     </div>
     {% endif %}
     <h1>
         Login
     </h1>
-    <table>
-    <tr>
-    <td>
+    <div class="container-full">
+    <div class="row">
+    <div class="span4 verticalLine">
     {% if form.errors %}
-        <p class="error">Sorry, that's not a valid username or password</p>
+    	<div class="alert alert-error">  
+        Sorry, that's not a valid username or password
+       </div>
     {% endif %}
 
     <form action='.' method='post'>
         {% csrf_token %}
+<<<<<<< HEAD
         {{ form|as_bootstrap }}
         <a href="{% url 'password_reset' %}" id="id_password_reset">I forgot my password</a>
+=======
+        {% include 'bootstrap/form.html' %}
+        <a href="{% url 'password_reset' %}" id="id_password_reset">Forgot your password?</a>
+>>>>>>> work
         <br/>
         <br/>
         Or <a href="{% url 'register' %}">register</a> if you don't have an account.
 {#        <button class="btn btn-primary">I forgot my password</button>#}
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
-    </td>
-    <td>&nbsp; </td>
-    <td class="verticalLine">&nbsp; </td>
-    <td valign="top" style="width:300px">
-    <p>Or using your <a href="{{ aaf_session_url }}"><button class="btn">Institution Credentials</button></a></p>
-    <p>Note: This will take you to the AAF (Australian Access Federation) login page.</p>
-    <p> If you are not yet authorised to use TAO you will be automatically redirected to the TAO Registration
+    </div>
+    
+    <div class="span5">
+    <p>Or use <a href="{{ aaf_session_url }}"><img src="{% static 'images/aaf_service.png' %}"/></a></p>
+    <p align="justify">Note: This will take you to the <a href="{{ aaf_session_url }}">AAF (Australian Access Federation) login page.</a><br/>
+     If you are not yet authorised to use TAO you will be automatically redirected to the TAO Registration
      Page after successfully authenticating with your AAF credentials.</p>
-    </td>
-    </tr>
-    </table>
+     </div>
+    </div>
+    </div>
 {% endblock content %}

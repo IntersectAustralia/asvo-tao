@@ -86,6 +86,7 @@ namespace tao {
             bat.template set_scalar<real_type>( "ra" );
             bat.template set_scalar<real_type>( "dec" );
             bat.template set_scalar<real_type>( "distance" );
+            bat.template set_scalar<real_type>( "sfr" );
          }
 
          std::string
@@ -101,8 +102,8 @@ namespace tao {
 	       "WHERE %2% = %3% AND "         // snapshot
 	       "%4% > %5% AND %4% < %6% AND " // x position
 	       "%7% > %8% AND %7% < %9% AND " // y position
-	       "%10% > %11% AND %10% < %12%" // z position
-	       "%13%" // filter
+	       "%10% > %11% AND %10% < %12%"  // z position
+	       "%13%"                         // filter
 	       );
             std::unordered_map<std::string,std::string> map;
             make_field_map( map, qry, box );
@@ -237,7 +238,7 @@ namespace tao {
 
          std::string
          make_output_field_query_string( tao::query<real_type>& query,
-                                         const std::unordered_map<std::string,std::string>& map ) const
+                                         std::unordered_map<std::string,std::string> const& map ) const
          {
             std::string qs;
             for( std::string of : query.output_fields() )

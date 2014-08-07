@@ -398,9 +398,13 @@ namespace tao {
 	       LOGDLN( "Material start age: ", first_age );
 	       LOGDLN( "Material finish age: ", last_age );
 
-	       // Use the stored dt value instead of the age I calculate.
-	       age_size = _dts[idx];
-	       first_age = last_age + age_size;
+	       // Use the stored dt value instead of the age I calculate, but
+               // only if we have a value of dt.
+               if( _dts[idx] > 0.0 )
+               {
+                  age_size = _dts[idx];
+                  first_age = last_age + age_size;
+               }
 
 	       // Use the star formation rates to compute the new mass
 	       // produced. Bear in mind the rates we expect from the
@@ -451,9 +455,9 @@ namespace tao {
 		  unsigned disk_bin_idx = first_age_bin*ssp.n_metal_bins() + disk_met_bin;
 		  unsigned bulge_bin_idx = first_age_bin*ssp.n_metal_bins() + bulge_met_bin;
 
-		  // Cache the current bin mass for later.
-		  real_type cur_disk_bin_mass = disk_age_masses[disk_bin_idx];
-		  real_type cur_bugle_bin_mass = bulge_age_masses[bulge_bin_idx];
+		  // // Cache the current bin mass for later.
+		  // real_type cur_disk_bin_mass = disk_age_masses[disk_bin_idx];
+		  // real_type cur_bugle_bin_mass = bulge_age_masses[bulge_bin_idx];
 
 		  // Update the mass bins.
 		  if( add_to_bulge )

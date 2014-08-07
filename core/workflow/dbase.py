@@ -133,6 +133,7 @@ class DBInterface(object):
             
     def SetJobPaused(self,JobID,UICommandID): 
            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Paused)+",jobstatuscomment='PAUSED BY WORKFLOW COMMAND ID="+str(UICommandID)+"' where JobID="+str(JobID)+";"
+           logging.info(Updatest)
            return self.ExecuteNoQuerySQLStatment(Updatest)     
     
     def AddNewJob(self,JobInformation):       
@@ -176,6 +177,9 @@ class DBInterface(object):
         SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed+" and latestjobversion=True ;")
         return self.ExecuteQuerySQLStatment(SELECTActive)    
     
+    def GetCurrentUserActiveJobs(self,UserName):
+        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)+" and latestjobversion=True and username='"+UserName+"';"
+        return self.ExecuteQuerySQLStatment(SELECTActive)    
     
     def GetRunningJobsWithTheSameUIReferenceID(self,UIReferenceID):
         SelectSt='SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username from jobs Where uireferenceid='+str(UIReferenceID)+' and JobStatus<'+str(EnumerationLookup.JobState.Completed)+';'        

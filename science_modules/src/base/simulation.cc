@@ -41,7 +41,10 @@ namespace tao {
       va_list vl;
       va_start( vl, num_snaps );
       for( unsigned ii = 0; ii < num_snaps; ++ii )
-         _zs[ii] = expansion_to_redshift( va_arg( vl, real_type ) );
+      {
+         real_type v = va_arg( vl, real_type );
+         _zs[ii] = expansion_to_redshift( v );
+      }
 
       // We really want these to be ordered by snapshots, and that
       // usually means oldest (largest redshifts) first.
@@ -75,7 +78,7 @@ namespace tao {
       // LOGILN( "Setting simulation cosmology:", setindent( 2 ) );
       _hubble = hubble;
       // LOGILN( "Hubble: ", hubble );
-      _h = _hubble/100;
+      _h = _hubble/100.0;
       _omega_m = omega_m;
       // LOGILN( "Omega M: ", omega_m );
       _omega_l = omega_l;

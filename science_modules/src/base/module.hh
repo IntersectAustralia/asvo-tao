@@ -206,8 +206,8 @@ namespace tao {
       bool _complete;
 
       pugi::xml_node _base;
-      const xml_dict _dict;
-      const xml_dict* _global_dict;
+      xml_dict const _dict;
+      xml_dict const* _global_dict;
    };
 
 }

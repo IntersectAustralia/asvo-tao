@@ -9,13 +9,22 @@
         <div>
             {{ form.get_apply_sed|as_bootstrap_field }}
         </div>
+<<<<<<< HEAD
         <div id="sed_params" data-bind="visible: apply_sed()">
+=======
+        <div data-bind="visible: !can_have_sed()" style="color:red;">(SED Module is not enabled for your current selection of Dark matter simulation and Galaxy model)</div>
+        <div id="sed_params"  data-bind="visible: apply_sed() && can_have_sed()">
+>>>>>>> work
 	{% for fieldset in form.fieldsets %}
 	    {{ fieldset|as_bootstrap_fieldset }}
 	{% endfor %}
         </div>
     </div>
+<<<<<<< HEAD
     <div class="aside span4" id="sed_info" data-bind="visible: apply_sed()">
+=======
+    <div class="aside span4" id="sed_info" data-bind="visible: apply_sed() && can_have_sed()">
+>>>>>>> work
         <div class="boxed">
             <div class="stellar-model-info" data-bind="if: stellar_model">
                 <div> Selected stellar model details </div>
@@ -41,11 +50,15 @@
         <div class="boxed">
             <div class="dust-model-info" data-bind="if: dust_model">
                 <div> Selected dust model details </div>
-                <div style="overflow-y: scroll;height: 178px">
+                <div data-bind="if: apply_dust() && dust_model()" style="overflow-y: scroll;height: 178px">
                     <p>
                         <strong class="name" data-bind='text: dust_model().fields.label'><!-- --></strong>
                     </p>
+<<<<<<< HEAD
                     <div class="details" data-bind='html: dust_model().fields.description'><!-- --></div>
+=======
+                    <div class="details" data-bind='html: dust_model().fields.details'><!-- --></div>
+>>>>>>> work
                 </div>
             </div>
         </div>

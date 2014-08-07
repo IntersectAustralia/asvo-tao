@@ -1,8 +1,14 @@
 
 var catalogue = catalogue || {};
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.record_filter = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+
+catalogue.module_defs.record_filter = function ($) {
+>>>>>>> work
 
     // KO ViewModel
     var vm = {}
@@ -71,6 +77,7 @@ catalogue.modules.record_filter = function ($) {
         }
 
     	// Get the default filter
+<<<<<<< HEAD
     	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
         if (defined(default_filter_pk)) {
             var def_dataset = catalogue.util.dataset_property(default_filter_pk);
@@ -78,6 +85,16 @@ catalogue.modules.record_filter = function ($) {
     	        add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
             }
         }
+=======
+        // Disabled for ticket ASVO-640
+    	// default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
+     //    if (defined(default_filter_pk)) {
+     //        var def_dataset = catalogue.util.dataset_property(default_filter_pk);
+     //        if (defined(def_dataset)) {
+    	//         add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+     //        }
+     //    }
+>>>>>>> work
 
     	// Get the selected output properties with is_filter==true
     	output_properties = catalogue.modules.light_cone.vm.output_properties();
@@ -91,7 +108,13 @@ catalogue.modules.record_filter = function ($) {
     		}
     	}
 
+<<<<<<< HEAD
         if (catalogue.modules.sed.vm.apply_sed()) {
+=======
+
+    	// Re-enabled by A Hassan V 1.01  Release
+        if (catalogue.modules.sed.vm.apply_sed() && catalogue.modules.sed.vm.can_have_sed()) {
+>>>>>>> work
             // Get the selected bandpass filters
             bandpass_filters = catalogue.modules.sed.vm.bandpass_filters();
             for (var i=0; i<bandpass_filters.length; i++) {
@@ -149,6 +172,7 @@ catalogue.modules.record_filter = function ($) {
     	var param; // Temporary variable for observable initialisation
         var defined = catalogue.validators.defined;
 
+<<<<<<< HEAD
     	vm.selection = ko.observable();
     	
     	vm.selections = ko.computed(filter_choices);
@@ -170,6 +194,20 @@ catalogue.modules.record_filter = function ($) {
         
         param = job['record_filter-max']
         vm.selection_max = ko.observable(param ? param : current_dataset.fields.default_filter_max)
+=======
+    	vm.selection = ko.observable().extend({required: true});
+    	
+    	vm.selections = ko.computed(filter_choices);
+        // Disabled for ticket ASVO-640
+    	// current_dataset = catalogue.modules.light_cone.vm.dataset();
+        // vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
+        // vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+        vm.selection_min = ko.observable();
+        vm.selection_max = ko.observable();
+
+        // Create the min and max observables
+        // Set up validation after creation as we have a validator that refers to both observables
+>>>>>>> work
 
         vm.selection_min
             .extend({required: function(){
@@ -182,8 +220,27 @@ catalogue.modules.record_filter = function ($) {
             .extend({required: function(){
                 return !defined(vm.selection_min());
             }})
+<<<<<<< HEAD
     		.extend({validate: catalogue.validators.is_float})
     		.extend({validate: valid_min_max});
+=======
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: valid_min_max});
+
+        param = job['record_filter-filter'];
+        if (param) {
+            param = catalogue.util.get_observable_by_attribute('value', param, vm.selections);
+            if(param) {
+                vm.selection(param);
+                if ('record_filter-min' in job) {
+                    vm.selection_min(job['record_filter-min'])
+                }
+                if ('record_filter-max' in job) {
+                    vm.selection_max(job['record_filter-max'])
+                }
+            }
+        }
+>>>>>>> work
 
     	vm.hr_summary = ko.computed(this.hr_summary);
 

@@ -41,24 +41,29 @@ class TorqueInterface(object):
     ##
     def InitDefaultparams(self):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
-                              'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
-
+                              'wt_hours': 168,'wt_minutes': 0,'wt_seconds': 0}
+        self.DB2PPNMapping={'bolshoi':4}
+        self.DB2MemMapping={'bolshoi':6}
+    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
     ##
     ## Write a PBS script from a parameters dictionary.
     ##
     ## @param[IN]  params  Dictionary of parameters.
     ## @param[IN]  path    Where to write PBS script.
     ##
-    def WritePBSScriptFile(self,UIJobReference,UserName,JobID, ppn,SubJobIndex):
-                
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'log')  
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'output')
+    def WritePBSScriptFile(self,UIJobReference,UserName,JobID, ppn,MemoryReq,SubJobIndex):
+        UserFolder=self.escapeUserName(UserName)        
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')  
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'output')
         
         
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
-        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(JobID)
+        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = int(self.Options['Torque:Nodes'])        
         self.DefaultParams['ppn'] = ppn
+        self.DefaultParams['mem'] = MemoryReq
         self.DefaultParams['subjobindex'] = SubJobIndex
         self.DefaultParams['UIJobReference'] = UIJobReference
         self.DefaultParams['path'] = logpath+"/"+"params"+str(SubJobIndex)+".xml"
@@ -74,42 +79,57 @@ class TorqueInterface(object):
         ##
         
         with open(FileName, 'w') as script:
-            script.write('''#!/bin/tcsh
+            script.write('''#!/bin/bash
             #PBS -N %(name)s
-            #PBS -l nodes=%(nodes)d:ppn=%(ppn)d
+            #PBS -l nodes=%(nodes)d:ppn=%(ppn)d,mem=%(mem)dgb
             #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
             #PBS -d .
-            source /usr/local/modules/init/tcsh
-            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-1.6.4 postgresql            
-            module load cfitsio/x86_64/gnu/3.290 skymaker/x86_64/gnu/3.3.3
-            setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
-            setenv PATH %(BaseLibPath)s/bin:$PATH
-            setenv LD_LIBRARY_PATH %(BaseLibPath)s/lib:%(BaseLibPath)s/helperlib:$LD_LIBRARY_PATH
+            #PBS -S /bin/bash
+            source /usr/local/modules/init/bash
+            module load python fftw/x86_64/gnu/3.3.2-threaded gcc/4.7.1 cmake boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql cfitsio/x86_64/gnu/3.290-threaded skymaker
+            echo Shared contexts: $PSM_SHAREDCONTEXTS_MAX
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             %(MergeScriptName)s %(outputpath)s %(subjobindex)d %(UIJobReference)d
             cd %(outputpath)s
-            tar -czf images.%(UIJobReference)d.tar.gz image.*.fits
-            rm image.*.fits
+            if ls image.*.fits &> /dev/null; then
+                tar -czf images.%(UIJobReference)d.tar.gz image.*.fits
+                rm image.*.fits
+            fi
             '''%self.DefaultParams)
         return FileName
-
+    
+    def GetPBSRequirement(self,SimulationName):
+        ppn=int(self.Options['Torque:ProcessorNode'])
+        Mem=6
+        logging.info('Simulation Name='+SimulationName)
+        if SimulationName in self.DB2PPNMapping:
+            ppn=self.DB2PPNMapping[SimulationName]
+        if SimulationName in self.DB2MemMapping:
+            Mem=self.DB2MemMapping[SimulationName]
+        
+        
+        
+        
+        return [ppn,Mem]
     ##
     ## Submit a PBS job.
     ##
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UIJobReference,UserName,JobID,SubJobIndex,IsSquentialJob=False):
+    def Submit(self,UIJobReference,UserName,JobID,SimulationName,SubJobIndex,IsSquentialJob=False):
         
         
         
         ppn=1
+        MemoryReq=6
         if IsSquentialJob==False:      
-            ppn=int(self.Options['Torque:ProcessorNode'])
+            [ppn,MemoryReq]=self.GetPBSRequirement(SimulationName)
         queuename=self.Options['Torque:JobsQueue']        
         
-        ScriptFileName = self.WritePBSScriptFile(UIJobReference,UserName,JobID, ppn,SubJobIndex)        
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'log')  
+        UserFolder=self.escapeUserName(UserName)
+        ScriptFileName = self.WritePBSScriptFile(UIJobReference,UserFolder,JobID, ppn,MemoryReq,SubJobIndex)        
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')  
                
         
         stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(logpath.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))

@@ -94,6 +94,13 @@ namespace tao {
       // Clear away any existing tree data.
       clear_tree_data();
 
+#ifndef NDEBUG
+      _old_snap = -1;
+      sql << "SELECT snapnum FROM " + table_name + " WHERE globalindex=:gid",
+         soci::into( _old_snap ), soci::use( global_index );
+      ASSERT( _old_snap != -1, "Global index not found in table." );
+#endif
+
       // Load the basic object information.
       unsigned long long dfo, subsize;
       sql << "SELECT depthfirst_traversalorder, subtree_count, snapnum FROM " +

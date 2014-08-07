@@ -2,9 +2,15 @@
     <table>
         <tr>
             <td><h4>Spectral Energy Distribution</h4></td>
+<<<<<<< HEAD
             <td><span class="select_mock_image" data-bind="text: apply_sed() ? '' : 'Not selected'"><!-- --></span></td>
         </tr>
         <!-- ko if: apply_sed -->
+=======
+            <td><span class="select_mock_image" data-bind="text: apply_sed() && can_have_sed() ? '' : 'Not selected'"><!-- --></span></td>
+        </tr>
+        <!-- ko if: apply_sed && can_have_sed() -->
+>>>>>>> work
         <tr class="apply_sed">
             <td>Model</td>
             <td data-bind="toggler: true">

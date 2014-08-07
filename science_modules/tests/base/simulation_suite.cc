@@ -33,7 +33,8 @@ TEST_CASE( "/tao/base/simulation/constructor/vector" )
 
 TEST_CASE( "/tao/base/simulation/constructor/expansions" )
 {
-   tao::simulation sim( 10, 75, 0.25, 0.70, 2, 0, 1 );
+   tao::simulation sim( 10, 75, 0.25, 0.70, 2,
+                        (tao::real_type)0.0078125, (tao::real_type)1.0 );
    TEST( sim.box_size() == 10.0 );
    TEST( sim.hubble() == 75.0 );
    TEST( sim.h() == 0.75 );
@@ -42,8 +43,8 @@ TEST_CASE( "/tao/base/simulation/constructor/expansions" )
    TEST( sim.omega_r() == 4.165e-5/(0.75*0.75) );
    TEST( sim.omega_k() == (1.0 - 0.25 - 0.70 - 4.165e-5/(0.75*0.75)) );
    TEST( sim.redshifts().size() == 2 );
-   TEST( sim.redshifts()[0] == 127.0 );
-   DELTA( sim.redshifts()[1], 79.99, 1e-2 );
+   DELTA( sim.redshifts()[0], 127.0, 1e-2 );
+   DELTA( sim.redshifts()[1], 0.0, 1e-2 );
 }
 
 TEST_CASE( "/tao/base/simulation/set_box_size" )

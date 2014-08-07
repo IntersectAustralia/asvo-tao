@@ -45,6 +45,33 @@ ko.extenders.required = function(target, option) {
 
 }
 
+<<<<<<< HEAD
+=======
+ko.extenders.only_if = function(target, option) {
+
+    var only_if = typeof option == 'function' ? option
+        : function() {return option};
+
+    var old_error;
+
+    if (target.hasOwnProperty('error')) {
+        old_error = target.error;
+    }
+
+    target.error = ko.computed(function(){
+        if (old_error !== undefined) {
+            var old = old_error();
+            if (old && old.error) return old;
+            if (old && old.skip) return {skip: true};
+        }
+        return only_if() ? {error: false} : {skip: true};
+    });
+    //return the original observable
+    return target;
+
+}
+
+>>>>>>> work
 ko.extenders.validate = function(target, option) {
 
     var valid = ko.computed(function(){
@@ -61,6 +88,10 @@ ko.extenders.validate = function(target, option) {
         if (old_error !== undefined) {
             var old = old_error();
             if (old && old.error) return old;
+<<<<<<< HEAD
+=======
+            if (old && old.skip) return {skip: true};
+>>>>>>> work
         }
         return valid();
     });
@@ -248,13 +279,24 @@ function has_value($elem) {
 
 
 
+<<<<<<< HEAD
 catalogue.util = function ($) {
+=======
+catalogue.util_def = function ($) {
+>>>>>>> work
 
     this.current_data = undefined;
     this.current_key = null;
 
     var that = this;
 
+<<<<<<< HEAD
+=======
+    this.show_errors = function() {
+        $('#error_report').dialog("open");
+    }
+
+>>>>>>> work
     this.get_observable_by_field = function(field, value, ko_array) {
         var result = null;
         for (var i = 0; i < ko_array().length; i++) {
@@ -476,7 +518,11 @@ catalogue.util = function ($) {
     this.dataset_property = function(id) {
         return $.grep(TaoMetadata.DataSetProperty, function(elem, idx) {
             return elem.pk == id
+<<<<<<< HEAD
         })[0] || {}
+=======
+        })[0] || null;
+>>>>>>> work
     }
 
 
@@ -624,7 +670,12 @@ catalogue.util = function ($) {
 }	// End catalog.util
 
 ////// summary_submit
+<<<<<<< HEAD
 catalogue.modules.summary_submit = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+catalogue.module_defs.summary_submit = function ($) {
+>>>>>>> work
 
     // KO ViewModel
     var vm = {}
@@ -646,6 +697,7 @@ catalogue.modules.summary_submit = function ($) {
 }
 ////// end summary_submit
 
+<<<<<<< HEAD
 jQuery(document).ready(function ($) {
 
     // error : dictionary as returned by computable in check_bind
@@ -653,6 +705,18 @@ jQuery(document).ready(function ($) {
         var $e = $(element);
         $e.closest('.control-group').removeClass('error');
         $e.popover('destroy');
+=======
+// expose doc_ready function for unit tests
+catalogue.doc_ready = function ($) {
+
+    // error : dictionary as returned by computable in check_bind
+    function error_display(element, error, popover) {
+        var $e = $(element);
+        $e.closest('.control-group').removeClass('error');
+        if (popover) {
+            $e.popover('destroy');
+        }
+>>>>>>> work
         $e.closest('.control-group').find('label').removeClass('error');
         switch(error.status) {
             case 'OK':
@@ -663,6 +727,7 @@ jQuery(document).ready(function ($) {
                 break;
             default: /* INVALID */
                 $e.closest('.control-group').addClass('error');
+<<<<<<< HEAD
                 $e.popover({
                     trigger: 'focus',
                     title: 'Validation Error',
@@ -702,6 +767,53 @@ jQuery(document).ready(function ($) {
                 error_display(element, resp);
             });
             error_display(element, aux());
+=======
+                if (popover) {
+                    $e.popover({
+                        trigger: 'focus',
+                        title: 'Validation Error',
+                        content: error.message
+                    });
+                }
+        }
+    }
+
+    function bind_check(element, valueAccessor, popover) {
+        var prop = valueAccessor();
+        if (prop.hasOwnProperty('required') || prop.hasOwnProperty('error')) {
+            if (!prop.hasOwnProperty('_bind_check') || prop._bind_element != element) {
+                var is_required = prop.hasOwnProperty('required');
+                var has_error_check =  prop.hasOwnProperty('error');
+                var aux = function() {
+                    var req;
+                    if (is_required) {
+                        req = prop.required();
+                    } else {
+                        req = catalogue.validators.defined(prop()) ? TAO_REQUIRED_VALIDATE : TAO_REQUIRED_NO;
+                    }
+                    switch(req) {
+                        case TAO_REQUIRED_NO:
+                            return {status: 'OK'};
+                        case TAO_REQUIRED_ERROR:
+                            return {status: 'REQUIRED'};
+                        default:
+                            var err = {error: false};
+                            if (has_error_check) {
+                                err = prop.error();
+                            }
+                            return err.error?
+                                {status: 'INVALID', message: err.message}
+                                : {status: 'OK'};
+                    }
+                };
+                prop._bind_element = element;
+                prop._bind_check = ko.computed(aux);
+                prop._bind_check.subscribe(function(resp){
+                    error_display(element, resp, popover);
+                });
+            }
+            error_display(element, prop._bind_check(), popover);
+>>>>>>> work
         }
     }
 
@@ -717,7 +829,11 @@ jQuery(document).ready(function ($) {
 
                 ko_value.init(element, valueAccessor, allBindingsAccessor);
 
+<<<<<<< HEAD
                 bind_check(element, valueAccessor);
+=======
+                bind_check(element, valueAccessor, true);
+>>>>>>> work
 
             };
 
@@ -725,7 +841,11 @@ jQuery(document).ready(function ($) {
 
                 ko_value.update(element, valueAccessor);
 
+<<<<<<< HEAD
                 bind_check(element, valueAccessor);
+=======
+                bind_check(element, valueAccessor, true);
+>>>>>>> work
 
             };
 
@@ -734,7 +854,16 @@ jQuery(document).ready(function ($) {
 
     ko.bindingHandlers['error_check'] = {
         init : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+<<<<<<< HEAD
                 bind_check(element, valueAccessor);
+=======
+            var nopop = allBindingsAccessor().error_check_nopop;
+            bind_check(element, valueAccessor, nopop === undefined || !nopop);
+        },
+        update : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var nopop = allBindingsAccessor().error_check_nopop;
+            bind_check(element, valueAccessor, nopop === undefined || !nopop);
+>>>>>>> work
         }
     };
 
@@ -763,6 +892,7 @@ jQuery(document).ready(function ($) {
 
     ko.bindingHandlers['spinner'] = {
         init: function(element, valueAccessor, allBindingsAccessor) {
+<<<<<<< HEAD
             //initialize datepicker with some optional options
             var options = ko.computed(function(){
                 var resp = allBindingsAccessor().spinnerOptions;
@@ -770,10 +900,21 @@ jQuery(document).ready(function ($) {
                 var max_v = typeof (resp.max || undefined) == 'function' ? resp.max() : (resp.max || NaN);
                 return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v};
             });
+=======
+
+            var options = function(){
+                var resp = allBindingsAccessor().spinnerOptions;
+                var max_v = typeof resp.max == 'function' ? resp.max() : resp.max;
+                if (max_v === undefined || max_v == null)
+                    max_v = NaN;
+                return {min: 1, max: max_v, disabled: isNaN(max_v) || 1 > max_v };
+            };
+>>>>>>> work
 
             $(element).spinner(options());
 
             //handle the field changing
+<<<<<<< HEAD
             ko.utils.registerEventHandler(element, "spinchange", function () {
                 var observable = valueAccessor();
                 observable($(element).spinner("value"));
@@ -781,11 +922,18 @@ jQuery(document).ready(function ($) {
 
             var subscription = options.subscribe(function(newOptions) {
                 $(element).spinner(newOptions);
+=======
+            ko.utils.registerEventHandler(element, "spinchange change", function () {
+                var observable = valueAccessor();
+                var val = $(element).spinner("value");
+                observable(val);
+>>>>>>> work
             });
 
             //handle disposal (if KO removes by the template binding)
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
                 $(element).spinner("destroy");
+<<<<<<< HEAD
                 subscription.dispose();
             });
 
@@ -796,6 +944,32 @@ jQuery(document).ready(function ($) {
             current = $(element).spinner("value");
             if (value !== current) {
                 $(element).spinner("value", value);
+=======
+            });
+            
+            $(element).bind("keydown", function (event) { 
+            	// prevent non digits in the input
+            	// allow enter, backspace and delete
+            	if ((event.keyCode < 48 || event.keyCode > 57 || event.shiftKey) && event.keyCode != 13 && event.keyCode != 8 && event.keyCode != 46) {
+            		event.preventDefault();
+            	}
+            });
+
+        },
+        update: function(element, valueAccessor, allBindingsAccessor) {
+            var options = function(){
+                var resp = allBindingsAccessor().spinnerOptions;
+                var max_v = typeof resp.max == 'function' ? resp.max() : resp.max;
+                if (max_v === undefined || max_v == null)
+                    max_v = NaN;
+                return {min: 1, max: max_v, disabled: isNaN(max_v) || 1 > max_v };
+            };
+            $(element).spinner(options());
+            var value = valueAccessor();
+            var current = $(element).spinner("value");
+            if (value() !== current) {
+                $(element).spinner("value", value());
+>>>>>>> work
             }
         }
     };
@@ -923,6 +1097,7 @@ jQuery(document).ready(function ($) {
 
     function initialise_modules(init_params) {
         // create module
+<<<<<<< HEAD
         for (var module in catalogue.modules) {
             console.log('Creating module: ' + module)
             catalogue.modules[module] = new catalogue.modules[module]($);
@@ -930,6 +1105,21 @@ jQuery(document).ready(function ($) {
         for (var module in catalogue.modules) {
             console.log('Initialising module: ' + module);
             catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
+=======
+        for (var module in catalogue.module_defs) {
+            console.log('Creating module: ' + module)
+            catalogue.modules[module] = new catalogue.module_defs[module]($);
+        }
+        catalogue.vm.param_errors = ko.observableArray();
+        for (var module in catalogue.modules) {
+            console.log('Initialising module: ' + module);
+            try {
+                catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
+            } catch (e) {
+                catalogue.vm.param_errors.push({'module': module, 'errors': [e]})
+                catalogue.vm[module] = catalogue.modules[module].init_model({ 'job' : {} });
+            }
+>>>>>>> work
             catalogue.vm[module]._name = module;
         }
         console.log('Finished module initialisation')
@@ -963,12 +1153,19 @@ jQuery(document).ready(function ($) {
         catalogue.vm.has_errors = ko.computed(function(){
             return catalogue.vm.all_errors().length != 0;
         });
+<<<<<<< HEAD
         catalogue.util.show_errors = function() {
             $('#error_report').dialog("open");
         }
         console.log('Finished module enrichment');
     }
 
+=======
+        console.log('Finished module enrichment');
+    }
+
+
+>>>>>>> work
     // after KO has done all the binding, we can do
     // some jquery_ui. Use with care! Keep in mind that
     // KO may recreate DOM elements as per UI bindings,
@@ -996,6 +1193,7 @@ jQuery(document).ready(function ($) {
         });
     }
 
+<<<<<<< HEAD
     (function () {
         catalogue.util = new catalogue.util($);
         var init_params = {
@@ -1026,3 +1224,45 @@ jQuery(document).ready(function ($) {
     })();
 
 });
+=======
+
+
+    catalogue.util = new catalogue.util_def($);
+    var init_params = {
+        'job' : window.TaoJob || {}
+    };
+    try {
+        initialise_catalogue_vm_and_tabs(init_params);
+        initialise_modules(init_params);    
+        if (!catalogue.validators.defined(window.TaoJobView)) {
+            // add tab, error and status support to models
+            prebinding_enrichment();
+        }
+        ko.applyBindings(catalogue.vm, document.body);
+        jquery_ui();
+        catalogue.vm.modal_message(null);
+        if (catalogue.validators.defined(window.TaoJob)
+            && catalogue.validators.defined(catalogue.vm.light_cone.this_tab)) {
+            catalogue.vm.light_cone.this_tab();
+        }
+        if (catalogue.vm.param_errors().length > 0) {
+            catalogue.util.show_errors();
+        }
+        catalogue._loaded = true;
+    } catch(e) {
+        if (e.stack !== undefined) {
+            var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+                  .replace(/^\s+at\s+/gm, '')
+                  .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+                  .split('\n');
+            for(var i = 0; i < stack.length; i++) console.log(stack[i]);
+        }
+        manual_modal('Fatal error initialising the UI, please contact support');
+        throw e;
+    }
+    
+
+};
+
+jQuery(document).ready(catalogue.doc_ready);
+>>>>>>> work

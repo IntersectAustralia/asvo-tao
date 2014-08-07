@@ -168,10 +168,19 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(process)d %(thread)d %(message)s'
+            },
+        'simple': {
+            'format': '%(levelname)s: %(message)s'
+            },
+        },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
+            'formatter': 'verbose',
             'filename': os.path.join(os.path.dirname(__file__), 'django.log'),
         },
         'console': {
@@ -199,9 +208,6 @@ LOGIN_URL = reverse_lazy('tao.views.login')
 ## AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
 AUTH_USER_MODEL = 'tao.TaoUser'
 
-EMAIL_HOST = 'gpo.swin.edu.au'
-EMAIL_PORT = '25'
-
 EMAIL_ACCEPT_SUBJECT = 'Welcome to ASVO TAO'
 EMAIL_REJECT_SUBJECT = 'Your request for access to ASVO TAO has been rejected'
 EMAIL_FROM_ADDRESS = 'admin@asvo.org.au'
@@ -213,6 +219,7 @@ RECAPTCHA_USE_SSL = True
 NUM_RECORDS_PER_PAGE = 10
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+SUMMARY_TMP = '/tmp/taosummarries/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -263,7 +270,11 @@ MODULE_INDICES = {
                   'telescope': '8'
                   }
 
+<<<<<<< HEAD
 TAO_VERSION = '1.0.1'
+=======
+TAO_VERSION = '1.0.15'
+>>>>>>> work
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
@@ -276,6 +287,11 @@ AAF_LAST_NAME = 'SHIB_surname'
 AAF_EMAIL = 'SHIB_email'
 AAF_COOKIE_PREFIX = '_shibsession_'
 
+<<<<<<< HEAD
+=======
+STATIC_CTX = ''
+
+>>>>>>> work
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
@@ -290,6 +306,7 @@ API_ALLOWED_IPS = (
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 USE_CAPTCHA=True
+MIN_PASSWORD_LENGTH=6
 
 #
 # Activity Log settings
@@ -302,6 +319,19 @@ ACTIVITYLOG_LOG_HTML_RESPONSE = False
 ACTIVITYLOG_HTML_START = "<!DOCTYPE html"
 
 #
+<<<<<<< HEAD
+# Activity Log settings
+#
+#Ignore responses altogether?
+ACTIVITYLOG_LOG_RESPONSE=False
+#Should we log full HTML responses?
+ACTIVITYLOG_LOG_HTML_RESPONSE = False
+# If we how do we recognized a full HTML response 
+ACTIVITYLOG_HTML_START = "<!DOCTYPE html"
+
+#
+=======
+>>>>>>> work
 # Pretty print the metadata being passed to the browser?
 # Useful for debugging, but much larger payload
 #

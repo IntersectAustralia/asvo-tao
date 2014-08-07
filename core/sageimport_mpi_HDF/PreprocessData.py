@@ -13,7 +13,7 @@ import numpy
 class PreprocessData(object):
 
     ## Mapping between SAGE (C/C++) data types to Database data types 
-    FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT'}
+    FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT','double':'FLOAT8','long':'int8'}
     
     
     ## Init the class with XML Options 
@@ -108,7 +108,9 @@ class PreprocessData(object):
         
         
         NumberofTables=CellsInX*CellsInY
-        TableIDs=range(0,NumberofTables+1)
+        serverscount=int(self.Options['PGDB:ServersCount'])
+        TableIDs=range(0,NumberofTables+serverscount)
+        #TableIDs=range(0,NumberofTables+1)
         
         for TableID in TableIDs:
             
@@ -150,14 +152,17 @@ class PreprocessData(object):
         
         ## Get List of all tables expected from "datafiles" table
         #TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
-        TableIDs=range(0,NumberofTables)
+        serverscount=int(self.Options['PGDB:ServersCount'])
+        TableIDs=range(0,NumberofTables+serverscount)
+        logging.info("Tables To Be Created:")
+        logging.info(TableIDs)        
         self.CreateTable_DB_Mapping()
         ## for each tableID create New Table 
         for TableID in TableIDs:
             logging.info("Creating Table ("+str(TableID)+")")
             self.CreateNewTable(TableID)
         
-        self.CreateNewTable(NumberofTables)
+        #self.CreateNewTable(NumberofTables)
     def CreateTable_DB_Mapping(self):
         DropTable="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS Table_DB_Mapping;"
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
@@ -168,15 +173,26 @@ class PreprocessData(object):
         
     ## Use Statement concatenation and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
+        FieldsList=[]
+        
         self.CreateTableTemplate="CREATE TABLE @TABLEName ("
         for field in self.CurrentSAGEStruct:            
             FieldDT=self.FormatMapping[field[1]]
             FieldName=field[2]
+            FieldsList+=[field[0]]
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
-        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"breadthfirst_traversalorder BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"depthfirst_traversalorder BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"subtree_count BIGINT"
+        
+        if FieldsList.count('LocalGalaxyID')==0:         
+            self.CreateTableTemplate=self.CreateTableTemplate+",LocalGalaxyID INT)"
+        else:
+            self.CreateTableTemplate=self.CreateTableTemplate+")"
      
+        
      
     def CreateIndexOnTreeSummaryTable(self):
         CreateIndexStatment="ALTER TABLE treesummary ADD PRIMARY KEY (globaltreeid);"
@@ -205,8 +221,22 @@ class PreprocessData(object):
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             CreateIndexStatment="Create Index GalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (posy);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
             CreateIndexStatment="Create Index GalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (posz);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
+            ###########################################################
+            CreateIndexStatment="Create Index breadthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (breadthfirst_traversalorder);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            #CreateIndexStatment="Create Index depthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (depthfirst_traversalorder);"
+            #self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index Combined_Index_GlobalTree_DepthFirst_"+NewTableName+" on  "+NewTableName+" (globaltreeid, depthfirst_traversalorder);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            #CreateIndexStatment="Create Index subtree_count_Index_"+NewTableName+" on  "+NewTableName+" (subtree_count);"
+            #self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
+            
+            
             logging.info("Table "+NewTableName+" Index Created ...")
     ## Perform create table for a specific TableIndex            
     def CreateNewTable(self,TableIndex):        

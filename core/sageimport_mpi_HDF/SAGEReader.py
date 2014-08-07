@@ -15,16 +15,16 @@ import PGDBInterface
 import h5py
 import numpy
 import time
+import ProcessTreeTraversal
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
     
     CurrentInputFilePath=""
     CurrentGlobalTreeID=0
-    FormatMapping={'int':'i',
-                   'float':'f',
-                   'long long':'q'                   
-                   }
+    FormatMapping={'int':'i','float':'f','long long':'q'}
+    
+    
     
     def __init__(self,CurrentSAGEStruct,Options,PGDB,CommSize,CommRank):
         
@@ -37,7 +37,21 @@ class SAGEDataReader:
         self.CommSize=CommSize
         self.CommRank=CommRank
         
-            
+        
+        self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
+        self.SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
+        self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
+        
+        
+        
+        self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
+        self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
+        
+        
+        
+        serverscount=int(self.Options['PGDB:ServersCount'])
+        self.BigTableID=(self.CellsInX*self.CellsInY)+(CommRank%serverscount)
+        logging.info("Big Table ID="+str(self.BigTableID))    
         
         
   
@@ -50,14 +64,7 @@ class SAGEDataReader:
     def ProcessAllTrees(self):
         
                
-        self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
-        self.SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
-        self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
         
-        
-        
-        self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
-        self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
         
         self.InputFile=h5py.File(self.CurrentInputFilePath,'r')
         
@@ -86,37 +93,134 @@ class SAGEDataReader:
         
     def GenerateDictFromFields(self,TreeLoadingID,TreeData):
         TreeDict=[]
+                
+        
+        
+        
         
         pgcopy_dtype = [('num_fields','>i2')]
+        FieldsList=[]
         FieldsIndex=0
         for field, dtype in TreeData.dtype.descr:
-            
+            FieldsList+=[self.CurrentSAGEStruct[FieldsIndex][0]]
             FieldName=self.CurrentSAGEStruct[FieldsIndex][0]
             pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, dtype.replace('<', '>'))]
             FieldsIndex=FieldsIndex+1
-        FieldName='TreeID'
+        
+        
+        
+        ####### Add Generated Fields (Computed) ###############################
+        
+        FieldName='TreeID'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
-        FieldName='CentralGalaxyGlobalID'
+        
+        FieldName='CentralGalaxyGlobalID'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
-        FieldName='LocalGalaxyID'
-        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i4')]
+        
+        
+        
+        FieldName='breadthfirst_traversalorder'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        FieldName='depthfirst_traversalorder'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        FieldName='subtree_count'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]       
+                
+        
+        
+        
+        
+        
+        
+        FieldsList+=['treeid']
+        FieldsList+=['centralgalaxyglobalid']       
+        FieldsList+=['breadthfirst_traversalorder']
+        FieldsList+=['depthfirst_traversalorder']
+        FieldsList+=['subtree_count']
+        #########################################################################
+        
+        
+        if(FieldsList.count('LocalGalaxyID')>0):
+            logging.info("### LocalGalaxyID already Exists. No Data Will be generated")
+        else:
+            logging.info("### LocalGalaxyID  is Missing. Regenerate Local GalaxyID")
+        
+        if(FieldsList.count('LocalGalaxyID')==0):        
+            FieldName='LocalGalaxyID'
+            pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i4')]
         
         
         pgcopy = numpy.empty(TreeData.shape, pgcopy_dtype)
-        pgcopy['num_fields'] = len(TreeData.dtype)+3
+        
+        
+        
+        pgcopy['TreeID_length'] = numpy.dtype('>i8').alignment    
+        pgcopy['CentralGalaxyGlobalID_length'] = numpy.dtype('>i8').alignment
+                       
+        pgcopy['breadthfirst_traversalorder_length']=numpy.dtype('>i8').alignment
+        pgcopy['depthfirst_traversalorder_length']=numpy.dtype('>i8').alignment
+        pgcopy['subtree_count_length']=numpy.dtype('>i8').alignment
+        
+        
+        
+        
+        GeneratedFields=0
+        if(FieldsList.count('LocalGalaxyID')==0): 
+            GeneratedFields=6
+        else:
+            GeneratedFields=5
+        
+        
+        pgcopy['num_fields'] = len(TreeData.dtype)+GeneratedFields
+            
         for i in range(0,len(TreeData.dtype)):
             field = self.CurrentSAGEStruct[i][0]                            
             pgcopy[field + '_length'] = TreeData.dtype[i].alignment
             pgcopy[field] = TreeData[TreeData.dtype.names[i]]
         
              
-        pgcopy['TreeID_length'] = pgcopy.dtype[-5].alignment
         
-        pgcopy['TreeID'].fill(TreeLoadingID) 
-        pgcopy['LocalGalaxyID']=range(0,len(TreeData))
-        pgcopy['CentralGalaxyGlobalID_length'] = pgcopy.dtype[-3].alignment
-        pgcopy['LocalGalaxyID_length'] = pgcopy.dtype[-1].alignment
         
+        pgcopy['TreeID'].fill(TreeLoadingID)        
+              
+        
+        
+                
+        
+        
+        if(FieldsList.count('LocalGalaxyID')==0):                       
+            pgcopy['LocalGalaxyID']=range(0,len(TreeData))
+            pgcopy['LocalGalaxyID_length'] = numpy.dtype('>i4').alignment
+        
+        
+        
+        
+        
+        ManageTreeIndexObj=ProcessTreeTraversal.ManageTreeIndex(self.Options)
+        
+        
+        ManageTreeIndexObj.BuildTree(TreeData)
+        
+        ManageTreeIndexObj.BreadthFirst(ManageTreeIndexObj.ParentNode)
+        ManageTreeIndexObj.DepthFirst_PreOrder(ManageTreeIndexObj.ParentNode)
+        ManageTreeIndexObj.CountChildNodes(ManageTreeIndexObj.ParentNode)
+        
+        NodesList={}
+        ManageTreeIndexObj.TreeToList(ManageTreeIndexObj.ParentNode,NodesList)      
+        
+        
+        
+        
+        for TreeField in pgcopy:         
+            
+            GlobalIndex=TreeField['GlobalIndex']  
+            
+            TreeField['breadthfirst_traversalorder']=NodesList[GlobalIndex]['BreadthFirstIndex']
+            TreeField['depthfirst_traversalorder']=NodesList[GlobalIndex]['DepthFirstIndex']
+            TreeField['subtree_count']=NodesList[GlobalIndex]['SubTreeSize']           
+           
         
             
             
@@ -125,12 +229,14 @@ class SAGEDataReader:
     def ComputeFields(self,TreeData):
         
         #print TreeData
-        for TreeField in TreeData:
-            CentralGalaxyLocalID=TreeField['CentralGal']  
-                     
-            CentralGalaxy=TreeData[CentralGalaxyLocalID]
-            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']    
-                        
+        if "CentralGal" in TreeData.dtype.fields:
+            for TreeField in TreeData:
+                CentralGalaxyLocalID=TreeField['CentralGal']  
+                         
+                CentralGalaxy=TreeData[CentralGalaxyLocalID]
+                TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']    
+        else:
+            logging.info('#### Central Galaxy Field Does not exist. Skipping Compute Fields #####')                
         return TreeData
       
             
@@ -207,7 +313,8 @@ class SAGEDataReader:
         StepSize=self.BSPCellSize
         
         PossibleTables=[]
-        
+        if MaxX>self.SimulationBoxX or MaxY>self.SimulationBoxY:
+            raise Exception("Error In Coordinate Values or in the simulation Box Size:("+str(MaxX)+","+str(MaxY)+") > ("+str(self.SimulationBoxX)+","+str(self.SimulationBoxY))
         ### Intersection between two Rectangles 
         ### http://silentmatt.com/rectangle-intersection/
         for X in numpy.arange(0,self.SimulationBoxX,StepSize):
@@ -234,10 +341,10 @@ class SAGEDataReader:
         
         if len(PossibleTables)==1:
             FinalTableID=int(PossibleTables[0])
-        elif len(PossibleTables)<=10:
+        elif len(PossibleTables)<=10 and len(PossibleTables)>0:
             FinalTableID=int(PossibleTables[randrange(len(PossibleTables))])
-        else:                        
-            FinalTableID=self.CellsInX*self.CellsInY
+        else:                                    
+            FinalTableID=self.BigTableID#self.CellsInX*self.CellsInY
         logging.info("Final Table ID="+str(FinalTableID))                
         return FinalTableID
         

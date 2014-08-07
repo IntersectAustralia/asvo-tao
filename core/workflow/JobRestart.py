@@ -47,7 +47,7 @@ class JobRestart(object):
         
     def AddNewJob(self,JobRecord,ErrorMessage):
         
-        if(ErrorMessage.find('Could not detect network connectivity')==-1):
+        if(ErrorMessage.find('MPI_INIT')==-1):
             logging.info('Job ('+str(JobRecord['jobid'])+') is not a network error Job - Not added to Restart List')
             return False;
         
@@ -58,12 +58,6 @@ class JobRestart(object):
             logging.info(JobRecord)            
             logging.info('Job ('+str(JobRecord['jobid'])+') Not added to Restart List')
             return False
-        
-        #JobID=JobRecord['jobid']
-        #SubJobIndex=JobRecord['subjobindex']
-        #issequential=JobRecord['issequential']
-        #UIReference_ID=JobRecord['uireferenceid']
-        #UserName=JobRecord['username']
         
         
         return True;

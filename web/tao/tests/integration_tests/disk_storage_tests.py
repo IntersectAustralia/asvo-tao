@@ -84,4 +84,9 @@ class DiskStorageTests(LiveServerTest):
 
     def test_current_disk_usage_displayed_on_history_page(self):
         self.visit('job_index')
+<<<<<<< HEAD
         self.assert_element_text_equals('#id_current_disk_usage', self.user.display_current_disk_usage().strip())
+=======
+        usage_str = self.user.display_current_disk_usage().strip() + ' of ' + self.user.display_user_disk_quota().strip()
+        self.assert_element_text_equals('#id_current_disk_usage', usage_str)
+>>>>>>> work

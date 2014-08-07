@@ -72,14 +72,15 @@ namespace tao {
             _bulge_spectra = &bat.vector<real_type>( "bulge_spectra" );
 
             // Find the wavelengths from my parents.
-            _waves = this->template attribute<hpc::view<std::vector<real_type>> const>( "wavelengths" );
+            hpc::assign( _waves, this->template attribute<hpc::view<std::vector<real_type> const>>( "wavelengths" ) );
 
             // What kind of dust are we using?
             std::string mod = boost::algorithm::to_lower_copy( dict.get<std::string>( "model" ) );
             if( mod == "calzetti" )
             {
                _mod = CALZETTI;
-               _sfrs = bat.scalar<real_type>( "sfr" );
+               _dsfrs = bat.scalar<real_type>( "sfrdisk" );
+               _bsfrs = bat.scalar<real_type>( "sfrbulge" );
             }
             else if( mod == "slab" )
             {
@@ -113,9 +114,9 @@ namespace tao {
                case CALZETTI:
                   for( unsigned ii = 0; ii < bat.size(); ++ii )
                   {
-                     process_spectra_calzetti( _sfrs[ii], (*_total_spectra)[ii] );
-                     process_spectra_calzetti( _sfrs[ii], (*_disk_spectra)[ii] );
-                     process_spectra_calzetti( _sfrs[ii], (*_bulge_spectra)[ii] );
+		     process_spectra_calzetti( _dsfrs[ii] + _bsfrs[ii], (*_total_spectra)[ii] );
+                     process_spectra_calzetti( _dsfrs[ii] + _bsfrs[ii], (*_disk_spectra)[ii] );
+                     process_spectra_calzetti( _dsfrs[ii] + _bsfrs[ii], (*_bulge_spectra)[ii] );
                   }
                   break;
 
@@ -165,8 +166,9 @@ namespace tao {
          hpc::matrix<real_type>* _total_spectra;
          hpc::matrix<real_type>* _disk_spectra;
          hpc::matrix<real_type>* _bulge_spectra;
-         hpc::view<std::vector<real_type>> _sfrs;
-         hpc::view<std::vector<real_type>> _waves;
+         hpc::view<std::vector<real_type>> _dsfrs;
+         hpc::view<std::vector<real_type>> _bsfrs;
+         hpc::view<std::vector<real_type> const> _waves;
          hpc::view<std::vector<real_type>> _cold_gas;
          hpc::view<std::vector<real_type>> _cold_gas_metal;
          hpc::view<std::vector<real_type>> _redshifts;
