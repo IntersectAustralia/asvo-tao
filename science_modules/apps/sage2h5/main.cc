@@ -743,6 +743,7 @@ protected:
 	    _hubble = boost::lexical_cast<double>(
 	       match[1].first, match[1].second - match[1].first
 	       );
+	    _hubble *= 100.0;
 	 }
 	 if( boost::regex_match( line.c_str(), match, omega_m_prog ) )
 	 {
