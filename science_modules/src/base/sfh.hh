@@ -34,13 +34,17 @@ namespace tao {
    {
    public:
 
-      sfh();
+      sfh( real_type h = 0.0 );
 
       sfh( age_line<real_type> const* snap_ages,
-	   hpc::fs::path const& path );
+	   hpc::fs::path const& path,
+           real_type h );
 
       void
       clear_tree_data();
+
+      void
+      set_h( real_type h );
 
       void
       set_snapshot_ages( age_line<real_type> const* snap_ages );
@@ -402,7 +406,8 @@ namespace tao {
                // only if we have a value of dt.
                if( _dts[idx] > 0.0 )
                {
-                  age_size = _dts[idx];
+                  ASSERT( _h > 0.0, "Invalid little h." );
+                  age_size = _dts[idx]/_h;
                   first_age = last_age + age_size;
                }
 
@@ -507,6 +512,7 @@ namespace tao {
       unsigned long long _cur_tree_id;
       unsigned long long _cur_gid;
       unsigned _root;
+      real_type _h;
    };
 
 }

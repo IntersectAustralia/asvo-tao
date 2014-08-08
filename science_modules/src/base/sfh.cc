@@ -6,17 +6,20 @@ namespace tao {
    using boost::format;
    using boost::str;
 
-   sfh::sfh()
+   sfh::sfh( real_type h )
       : _snap_ages( 0 ),
         _old_snap( std::numeric_limits<int>::max() ),
         _cur_tree_id( std::numeric_limits<unsigned long long>::max() ),
         _cur_gid( std::numeric_limits<unsigned long long>::max() ),
-	_root( std::numeric_limits<unsigned>::max() )
+	_root( std::numeric_limits<unsigned>::max() ),
+        _h( h )
    {
    }
 
    sfh::sfh( age_line<real_type> const* snap_ages,
-             hpc::fs::path const& path )
+             hpc::fs::path const& path,
+             real_type h )
+      : _h( h )
    {
       set_snapshot_ages( snap_ages );
       load( path );
@@ -35,6 +38,12 @@ namespace tao {
       hpc::deallocate( _masses );
       hpc::deallocate( _inv_lids );
       hpc::deallocate( _par_displs );
+   }
+
+   void
+   sfh::set_h( real_type h )
+   {
+      _h = h;
    }
 
    void

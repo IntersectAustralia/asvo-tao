@@ -101,6 +101,7 @@ namespace tao {
 
             // Setup my SFH age line.
             _snap_ages.load_ages( _be->session(), _sim->hubble(), _sim->omega_m(), _sim->omega_l() );
+            _sfh.set_h( _sim->h() );
             _sfh.set_snapshot_ages( &_snap_ages );
 
             // Allocate history bin arrays.

@@ -73,7 +73,7 @@ protected:
 
       // Prepare star formation history.
       tao::age_line<tao::real_type> snap_ages( be.session(), *sim );
-      tao::sfh sfh;
+      tao::sfh sfh( sim->h() );
       sfh.set_snapshot_ages( &snap_ages );
 
       // Do a silly iteration over all the galaxies.
@@ -148,7 +148,7 @@ protected:
 
       // Prepare star formation history.
       tao::age_line<tao::real_type> snap_ages( be.session(), *sim );
-      tao::sfh sfh;
+      tao::sfh sfh( sim->h() );
       sfh.set_snapshot_ages( &snap_ages );
 
       // Dump to files.
