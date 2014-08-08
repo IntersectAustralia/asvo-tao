@@ -37,8 +37,6 @@ public:
 
       // Parse options.
       parse_options( argc, argv );
-      EXCEPT( _mode == "convert" || _mode == "check" ||
-              _mode == "find" || _mode == "show" || _mode == "count", "Invalid mode." );
       EXCEPT( !_sage_dir.empty(), "No SAGE output directory given." );
       EXCEPT( !_param_fn.empty(), "No SAGE parameter file given." );
       EXCEPT( !_alist_fn.empty(), "No SAGE expansion file given." );
@@ -73,6 +71,8 @@ public:
 	 show();
       else if( _mode == "count" )
 	 count();
+      else if( _mode == "mass" )
+	 mass();
    }
 
    void
@@ -443,6 +443,38 @@ public:
 
       if( _comm->rank() == 0 )
          std::cout << "Galaxies in snapshot " << _filez << ": " << tot_gals << "\n";
+   }
+
+   ///
+   /// Dump mass from particular snapshot.
+   ///
+   void
+   mass()
+   {
+      _load_param( _param_fn );
+      _load_redshifts( _alist_fn );
+
+      std::array<size_t,2> idx_rng = _sage_idx_rng();
+      LOGILN( "Processing range: ", idx_rng );
+
+      for( size_t ii = idx_rng[0]; ii < idx_rng[1]; ++ii )
+      {
+	 std::vector<std::ifstream> files = _open_files( ii );
+	 int n_gals, n_trees;
+	 files[_filez].read( (char*)&n_trees, sizeof(n_trees) );
+	 files[_filez].read( (char*)&n_gals, sizeof(n_gals) );
+	 std::vector<int> n_tree_gals( n_trees );
+	 files[_filez].read( (char*)n_tree_gals.data(), n_trees*sizeof(int) );
+	 unsigned long long tot_gals = std::accumulate<std::vector<int>::const_iterator,unsigned long long>( n_tree_gals.begin(), n_tree_gals.end(), 0 );
+         for( unsigned long long ii = 0; ii < tot_gals; ++ii )
+         {
+            // OUTPUT_GALAXY gal;
+            GALAXY_OUTPUT_MASTER gal;
+            files[_filez].read( (char*)&gal, sizeof(gal) );
+            ASSERT( files[_filez].good(), "Failed to read galaxy." );
+            std::cout << gal.StellarMass*1e10 << "\n";
+         }
+      }
    }
 
    void

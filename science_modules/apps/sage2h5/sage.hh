@@ -3,66 +3,130 @@
 
 struct OUTPUT_GALAXY
 {
-  int   Type;
-  long long   GalaxyIndex;
-  int   HaloIndex;
-  int   FOFHaloIndex;
-  int   TreeIndex;
+   int   Type;
+   long long   GalaxyIndex;
+   int   HaloIndex;
+   int   FOFHaloIndex;
+   int   TreeIndex;
   
-  int   SnapNum;
-  float dt;
-  int   CentralGal;
-  float CentralMvir;
+   int   SnapNum;
+   float dt;
+   int   CentralGal;
+   float CentralMvir;
 
-  int   mergeType;  //0=none; 1=minor merger; 2=major merger; 3=disk instability; 4=disrupt to ICS
-  int   mergeIntoID;
-  int   mergeIntoSnapNum;
+   int   mergeType;  //0=none; 1=minor merger; 2=major merger; 3=disk instability; 4=disrupt to ICS
+   int   mergeIntoID;
+   int   mergeIntoSnapNum;
 
-  // properties of subhalo at the last time this galaxy was a central galaaxy 
-  float Pos[3];
-  float Vel[3];
-  float Spin[3];
-  int   Len;   
-  float Mvir;
-  float Rvir;
-  float Vvir;
-  float Vmax;
-  float VelDisp;
+   // properties of subhalo at the last time this galaxy was a central galaaxy 
+   float Pos[3];
+   float Vel[3];
+   float Spin[3];
+   int   Len;   
+   float Mvir;
+   float Rvir;
+   float Vvir;
+   float Vmax;
+   float VelDisp;
 
-  // baryonic reservoirs 
-  float ColdGas;
-  float StellarMass;
-  float BulgeMass;
-  float HotGas;
-  float EjectedMass;
-  float BlackHoleMass;
-  float ICS;
+   // baryonic reservoirs 
+   float ColdGas;
+   float StellarMass;
+   float BulgeMass;
+   float HotGas;
+   float EjectedMass;
+   float BlackHoleMass;
+   float ICS;
 
-  // metals
-  float MetalsColdGas;
-  float MetalsStellarMass;
-  float MetalsBulgeMass;
-  float MetalsHotGas;
-  float MetalsEjectedMass;
-  float MetalsICS;
+   // metals
+   float MetalsColdGas;
+   float MetalsStellarMass;
+   float MetalsBulgeMass;
+   float MetalsHotGas;
+   float MetalsEjectedMass;
+   float MetalsICS;
 
-  // to calculate magnitudes
-  float SfrDisk;
-  float SfrBulge;
-  float SfrDiskZ;
-  float SfrBulgeZ;
+   // to calculate magnitudes
+   float SfrDisk;
+   float SfrBulge;
+   float SfrDiskZ;
+   float SfrBulgeZ;
   
-  // misc 
-  float DiskScaleRadius;
-  float Cooling;
-  float Heating;
-  float LastMajorMerger;
-  float OutflowRate;
+   // misc 
+   float DiskScaleRadius;
+   float Cooling;
+   float Heating;
+   float LastMajorMerger;
+   float OutflowRate;
 
-  //infall properties
-  float infallMvir;
-  float infallVvir;
-  float infallVmax;
+   //infall properties
+   float infallMvir;
+   float infallVvir;
+   float infallVmax;
+};
+
+struct GALAXY_OUTPUT_MASTER
+{
+   int   Type;
+   long long   GalaxyIndex;
+   int   HaloIndex;
+   int   FOFHaloIndex;
+   int   TreeIndex;
+  
+   int   SnapNum;
+   int   CentralGal;
+   float CentralMvir;
+
+   int   mergeType;  //0=none; 1=minor merger; 2=major merger; 3=disk instability; 4=disrupt to ICS
+   int   mergeIntoID;
+   int   mergeIntoSnapNum;
+   int   dT;
+
+   // properties of subhalo at the last time this galaxy was a central galaaxy 
+   float Pos[3];
+   float Vel[3];
+   float Spin[3];
+   int   Len;   
+   float Mvir;
+   float Rvir;
+   float Vvir;
+   float Vmax;
+   float VelDisp;
+
+   // baryonic reservoirs 
+   float ColdGas;
+   float StellarMass;
+   float BulgeMass;
+   float HotGas;
+   float EjectedMass;
+   float BlackHoleMass;
+   float ICS;
+
+   // metals
+   float MetalsColdGas;
+   float MetalsStellarMass;
+   float MetalsBulgeMass;
+   float MetalsHotGas;
+   float MetalsEjectedMass;
+   float MetalsICS;
+
+   // to calculate magnitudes
+   float SfrDisk;
+   float SfrBulge;
+   float SfrDiskZ;
+   float SfrBulgeZ;
+  
+   // misc 
+   float DiskScaleRadius;
+   float Cooling;
+   float Heating;
+   float LastMajorMerger;
+   float OutflowRate;
+
+   //infall properties
+   float infallMvir;
+   float infallVvir;
+   float infallVmax;
 };
 
 namespace sage {

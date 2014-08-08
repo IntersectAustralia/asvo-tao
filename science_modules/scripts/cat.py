@@ -7,7 +7,6 @@ def cat(ptrn, n_files, out_fn, **kwargs):
             with open(ptrn%ii, 'r') as in_f:
                 for jj in range(skip):
                     in_f.readline()
-                in_f.readline()
                 out_f.write(in_f.read())
 
 if __name__ == '__main__':

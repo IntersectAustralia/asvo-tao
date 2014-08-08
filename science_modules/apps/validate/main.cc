@@ -60,9 +60,6 @@ protected:
    void
    _error()
    {
-      typedef hpc::view<std::vector<tao::real_type>> view_type;
-      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
-
       tao::backends::multidb<tao::real_type> be;
       tao::simulation const* sim;
       _connect( be, sim );
@@ -74,7 +71,7 @@ protected:
                 "data/stellar_populations/m05/metallicities.dat",
                 "data/stellar_populations/m05/ssp.ssz" );
 
-      // Prepare staf formation history.
+      // Prepare star formation history.
       tao::age_line<tao::real_type> snap_ages( be.session(), *sim );
       tao::sfh sfh;
       sfh.set_snapshot_ages( &snap_ages );
@@ -118,10 +115,10 @@ protected:
             tao::real_type error = (mod_mass > 0.0) ? (my_mass - mod_mass)/mod_mass : 0.0;
             if( mod_mass > 0.0 )
             {
-               std::cout << my_mass << ", " << mod_mass << ", " << (my_mass - mod_mass)/mod_mass;
+               std::cout << my_mass << "  " << mod_mass << "  " << (my_mass - mod_mass)/mod_mass;
 #ifndef NDEBUG
-               std::cout << ", " << stats.n_gals << ", " << stats.n_mergers << ", ";
-               std::cout << stats.n_major << ", " << stats.n_minor << ", " << stats.n_disrupt;
+               std::cout << "  " << stats.n_gals << "  " << stats.n_mergers << "  ";
+               std::cout << stats.n_major << "  " << stats.n_minor << "  " << stats.n_disrupt;
 #endif
                std::cout << "\n";
             }
@@ -200,9 +197,6 @@ protected:
    void
    _count()
    {
-      typedef hpc::view<std::vector<tao::real_type>> view_type;
-      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
-
       tao::backends::multidb<tao::real_type> be;
       tao::simulation const* sim;
       _connect( be, sim );
@@ -232,9 +226,6 @@ protected:
    void
    _mass()
    {
-      typedef hpc::view<std::vector<tao::real_type>> view_type;
-      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
-
       tao::backends::multidb<tao::real_type> be;
       tao::simulation const* sim;
       _connect( be, sim );
@@ -244,19 +235,14 @@ protected:
       box.set_snapshot( _snap );
       tao::query<tao::real_type> qry;
       qry.add_output_field( "stellarmass" );
-      qry.add_output_field( "mvir" );
       for( auto gal_it = be.galaxy_begin( qry, box ); gal_it != be.galaxy_end( qry, box ); ++gal_it )
       {
          tao::batch<tao::real_type> bat = *gal_it;
 	 hpc::view<std::vector<tao::real_type>> masses = bat.scalar<tao::real_type>( "stellarmass" );
-	 hpc::view<std::vector<tao::real_type>> mvirs = bat.scalar<tao::real_type>( "mvir" );
 
 	 // Check masses.
 	 for( unsigned ii = 0; ii < bat.size(); ++ii )
-	 {
-	    if( mvirs[ii] > 2.0 )
-	       std::cout << masses[ii]*1e10 << "\n";
-	 }
+            std::cout << masses[ii]*1e10 << "\n";
       }
    }
 
