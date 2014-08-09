@@ -35,7 +35,7 @@ TEST_CASE( "observed_redshift/low_redshift" )
    tao::lightcone lc( &tao::mini_millennium );
    lc.set_geometry( 0.0, 10.0, 0.0, 10.0, 10.0, 0.0 );
    tao::real_type z = lc.distance_to_redshift( pos.magnitude() );
-   tao::real_type res = 3.0*(1.0 + z)/(sqrt( 3.0 )*hpc::constant::c) + z;
+   tao::real_type res = 3.0*(1.0 + z)/(sqrt( 3.0 )*hpc::constant::c_km_s) + z;
    DELTA( tao::observed_redshift( z, pos, vel, lc.simulation()->hubble() ), res, 1e-8 );
 }
 
@@ -45,8 +45,8 @@ TEST_CASE( "observed_redshift/high_redshift" )
    tao::lightcone lc( &tao::mini_millennium );
    lc.set_geometry( 0.0, 10.0, 0.0, 10.0, 60.0, 0.0 );
    tao::real_type z = lc.distance_to_redshift( pos.magnitude() );
-   tao::real_type res = 3.0*(1.0 + z)/(sqrt( 81120000.0 )*hpc::constant::c) + z;
-   DELTA( tao::observed_redshift( z, pos, vel, lc.simulation()->hubble() ), res, 1e-6 );
+   tao::real_type res = 3.0*(1.0 + z)/(sqrt( 81120000.0 )*hpc::constant::c_km_s) + z;
+   DELTA( tao::observed_redshift( z, pos, vel, lc.simulation()->hubble() ), res, 1e-3 );
 }
 
 TEST_CASE( "approx_observed_redshift/zero_z" )
