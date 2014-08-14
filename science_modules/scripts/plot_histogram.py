@@ -28,6 +28,8 @@ bins = None
 for ii in range(len(args.file)):
     log = args.log[ii] if len(args.log) > 1 else args.log[0]
     sep = args.seperator[ii] if len(args.seperator) > 1 else args.seperator[0]
+    if sep == ' ':
+        sep = None
     with open(args.file[ii], 'r') as in_f:
         for line in in_f:
             words = line.split(sep)
