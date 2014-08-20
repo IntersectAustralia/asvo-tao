@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from tao.models import TaoUser
 
 from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset, format_human_readable_file_size
-
+from tao.models import Catalogue,PreMade_DataSet,PreMade_DataSetProperty
 for model in (GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter, SurveyPreset):
     admin.site.register(model)
 
@@ -24,6 +24,8 @@ class SimulationAdmin(admin.ModelAdmin):
 
 admin.site.register(Simulation, SimulationAdmin)
 
+
+
 class DataSetPropertyInline(admin.TabularInline):
     """
     DataSetPropertyInLine
@@ -31,17 +33,21 @@ class DataSetPropertyInline(admin.TabularInline):
     model = DataSetProperty
     extra = 3
 
+
 class SnapshotInline(admin.TabularInline):
     """
     SnapshotInLine
     """
     model = Snapshot
     
+
+
 class DataSetAdmin(admin.ModelAdmin):
     """
     DataSetAdmin
     """
     inlines = [DataSetPropertyInline, SnapshotInline]
+
 
 class DataSetPropertyAdmin(admin.ModelAdmin):
     list_display = ('dataset', 'label', 'is_filter', 'is_output', 'is_computed')
@@ -50,6 +56,35 @@ class DataSetPropertyAdmin(admin.ModelAdmin):
 
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(DataSetProperty, DataSetPropertyAdmin)
+
+
+
+class CatalogueAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order')
+
+admin.site.register(Catalogue, CatalogueAdmin)
+class PreMade_DataSetPropertyInline(admin.TabularInline):
+    """
+    PreMade_DataSetPropertyInLine
+    """
+    model = PreMade_DataSetProperty
+    extra = 3
+class PreMade_DataSetAdmin(admin.ModelAdmin):
+    """
+    PreMade_DataSetAdmin
+    """
+    inlines = [PreMade_DataSetPropertyInline]
+    
+
+
+class PreMade_DataSetPropertyAdmin(admin.ModelAdmin):
+    list_display = ('PreMade_dataset', 'label', 'is_filter', 'is_output', 'is_computed')
+    ordering = ('PreMade_dataset', 'group', 'order', 'label')
+    search_fields = ['id', 'name', 'label']
+
+admin.site.register(PreMade_DataSet, PreMade_DataSetAdmin)
+admin.site.register(PreMade_DataSetProperty, PreMade_DataSetPropertyAdmin)
+
 
 
 class UserChangeForm(forms.ModelForm):

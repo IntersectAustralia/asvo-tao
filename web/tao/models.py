@@ -203,6 +203,7 @@ class DataSet(models.Model):
     job_size_p3 = models.FloatField(default=0.37135452)
     enableSED = models.BooleanField(default=True)
     enableImage = models.BooleanField(default=True)
+    isreadymade=models.BooleanField(default=False)
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
         ordering = ['id']
@@ -568,3 +569,99 @@ class SurveyPreset(models.Model):
     def __str__(self):
         return self.name
 
+class Catalogue(models.Model):        
+
+    name = models.CharField(max_length=100, unique=True)    
+    catalogue_details = models.TextField(default='')
+    order = models.IntegerField(default='0')
+    acknowledgement_txt = models.TextField(default='')
+    
+    def __unicode__(self):
+        return self.name
+    
+    class Meta:
+        ordering = ['name', 'order']
+
+    def save(self, *args, **kwargs):
+        if self.name:
+            self.name = self.name.strip()
+        super(Catalogue, self).save(*args, **kwargs)
+
+class PreMade_DataSet(models.Model):
+   
+    catalogue = models.ForeignKey(Catalogue)    
+    database = models.CharField(max_length=200)
+    datasetname= models.CharField(max_length=250)
+    version = models.DecimalField(max_digits=10, decimal_places=2, default='1.00')
+    import_date = models.DateField(auto_now_add=True)
+    available = models.BooleanField(default=True)
+    default_filter_field = models.ForeignKey('PreMade_DataSetProperty', related_name='PreMade_DataSetProperty', null=True, blank=True)
+    default_filter_min = models.FloatField(null=True, blank=True)
+    default_filter_max = models.FloatField(null=True, blank=True)    
+    class Meta:        
+        ordering = ['id']
+
+    def __unicode__(self):
+        return "%s" % (self.datasetname)
+
+class PreMade_DataSetProperty(models.Model):
+    TYPE_INT = 0
+    TYPE_FLOAT = 1
+    TYPE_LONG_LONG = 2
+    TYPE_STRING = 3
+    TYPE_DOUBLE = 4
+    TYPE_LONG = 5
+    # Note: The values listed below are used by the import code,
+    # and thus must match.
+    DATA_TYPES = (
+                  (TYPE_INT, 'int'),
+                  (TYPE_FLOAT, 'float'),
+                  (TYPE_LONG_LONG, 'long long'),
+                  (TYPE_STRING, 'string'),
+                  (TYPE_DOUBLE, 'double'),
+                  (TYPE_LONG, 'long'),
+                  )
+    name = models.CharField(max_length=200)
+    units = models.CharField(max_length=30, default='', blank=True)
+    label = models.CharField(max_length=40)
+    PreMade_dataset = models.ForeignKey(PreMade_DataSet)
+    data_type = models.IntegerField(choices=DATA_TYPES)
+    is_computed = models.BooleanField(default=False)
+    is_filter = models.BooleanField(default=True)
+    is_output = models.BooleanField(default=True)
+    description = models.TextField(default='', blank=True)
+    group = models.CharField(max_length=80, default='', blank=True)
+    order = models.IntegerField(default=0)
+    is_index = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False)
+    flags = models.IntegerField(default=3)  # property bit flags: 0-th bit sets light-cone, 1-th bit sets box
+
+    class Meta:
+        ordering = ['group', 'order', 'label']
+
+    def __unicode__(self):
+        return u"{0} in {1}".format(self.label, self.PreMade_dataset.__unicode__())
+
+    def option_label(self):
+        if (self.units is not None and self.units != ''):
+            return "%s (%s)" % (self.label, self.units)
+        else:
+            return self.label
+    
+    ## This method added to ensure that the dataset properties will be returned into a sorted order based on the group, order, and label 
+    ## Added by AHassan 
+    @classmethod
+    def getSortedList(this,PropArr):
+        SortedProp=DataSetProperty.objects.raw("SELECT id FROM tao_premade_datasetproperty where id in ("+','.join(PropArr)+")order by `group`,`order`,`label`;")    	
+        SortedList=[]			        
+        for DataSetPropertyObj in SortedProp:        	
+        	SortedList.append(DataSetPropertyObj.id)
+         
+        return SortedList
+        
+    @classmethod
+    def data_type_enum(cls, val):
+        for dtype in cls.DATA_TYPES:
+            if dtype[1] == val:
+                return dtype[0]
+        raise ValueError('Unknown data type: {0}'.format(val))  
