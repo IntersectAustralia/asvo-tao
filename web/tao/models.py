@@ -592,6 +592,7 @@ class PreMade_DataSet(models.Model):
     catalogue = models.ForeignKey(Catalogue)    
     database = models.CharField(max_length=200)
     datasetname= models.CharField(max_length=250)
+    dataset_details= models.TextField(default='')
     version = models.DecimalField(max_digits=10, decimal_places=2, default='1.00')
     import_date = models.DateField(auto_now_add=True)
     available = models.BooleanField(default=True)
