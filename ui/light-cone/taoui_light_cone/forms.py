@@ -153,6 +153,7 @@ class Form(BetterForm):
     EDIT_TEMPLATE = 'taoui_light_cone/edit.html'
     CONE = 'light-cone'
     BOX = 'box'
+    
     UNIQUE = 'unique'
     RANDOM = 'random'
     MODULE_VERSION = 1
@@ -160,7 +161,7 @@ class Form(BetterForm):
     LABEL = 'General Properties'
     TAB_ID = settings.MODULE_INDICES['light_cone']
 
-    catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone'), ])
+    catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone') ])
 
     redshift_max = forms.DecimalField(required=False, label=_('Redshift max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     redshift_min = forms.DecimalField(required=False, label=_('Redshift min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
@@ -201,6 +202,7 @@ class Form(BetterForm):
             }),
             ]
         row_attrs = {
+        		#'galaxy_model':{'data-bind':'visible: (catalogue_geometry().id == "light-cone" || catalogue_geometry().id == "box") '},
             'ra_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},            
             'ra_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'dec_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},

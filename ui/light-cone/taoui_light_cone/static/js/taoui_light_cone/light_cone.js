@@ -173,7 +173,7 @@ catalogue.module_defs.light_cone = function ($) {
         this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
             { id: 'light-cone', name: 'Light-Cone', bit_mask:1},
-            { id: 'box', name: 'Box', bit_mask:2}
+            { id: 'box', name: 'Box', bit_mask:2}            
             ]);
         param = job['light_cone-catalogue_geometry']
         if (param)
