@@ -12,8 +12,9 @@ if __name__ == '__main__':
     OutputFilePath=sys.argv[2]
     
     InputFile = open(InputFilePath, 'r')
-    #OutputFile = open(OutputFilePath, 'w')
-    
+    OutputFile = open(OutputFilePath, 'w')
+    OutputFile.write("<settings>\n")
+    OutputFile.write("<sageinput>\n")
     for line in InputFile:
         pattern = re.compile(r"""\#\s*
                                 (?P<Index>\d*)\s*
@@ -31,5 +32,9 @@ if __name__ == '__main__':
         if DescTxt!="":
             FieldStr=FieldStr+" Desc=\""+DescTxt+"\""
         FieldStr=FieldStr+">"+match.group("FieldName")+"</Field>"
-        print FieldStr
+        OutputFile.write(FieldStr+"\n")
+    OutputFile.write("</sageinput>\n")
+    OutputFile.write("</settings>")
+    OutputFile.close()
+    InputFile.close()
         
