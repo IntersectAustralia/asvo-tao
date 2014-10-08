@@ -41,6 +41,12 @@ namespace tao {
          }
 
          void
+         set_init_tables( bool state = true )
+         {
+            _init_tbls = state;
+         }
+
+         void
          add_field( std::string const& name,
                     std::string const& mapped = std::string() )
          {
@@ -439,6 +445,7 @@ namespace tao {
          std::unordered_map<std::string,std::string> _field_map;
          std::map<std::string,typename batch<real_type>::field_value_type> _field_types;
          bool _con;
+         bool _init_tbls;
       };
 
       template< class T >

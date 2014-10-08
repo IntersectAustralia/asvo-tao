@@ -85,7 +85,7 @@ namespace tao {
          ::soci::session&
          session()
          {
-            return _mdb["tree_1"];
+            return _mdb["tree_0"];
          }
 
          virtual
@@ -109,26 +109,29 @@ namespace tao {
             if( this->_field_map.empty() )
                this->_load_field_types();
 
-            // Create temporary snapshot range table.
-            if( this->_sim )
+            if( this->_init_tbls )
             {
-               LOGBLOCKI( "Making redshift range tables." );
-               for( auto& pair : _mdb.CurrentServers )
+               // Create temporary snapshot range table.
+               if( this->_sim )
                {
-                  pair.second->OpenConnection();
-
-                  // Try and drop the redshift range table.
-                  try
+                  LOGBLOCKI( "Making redshift range tables." );
+                  for( auto& pair : _mdb.CurrentServers )
                   {
-                     pair.second->Connection << this->make_drop_snap_rng_query_string();
-                  }
-                  catch( const ::soci::soci_error& ex )
-                  {
-                  }
+                     pair.second->OpenConnection();
 
-                  auto queries = this->make_snap_rng_query_string( *this->_sim );
-                  for( const auto& query : queries )
-                     pair.second->Connection << query;
+                     // Try and drop the redshift range table.
+                     try
+                     {
+                        pair.second->Connection << this->make_drop_snap_rng_query_string();
+                     }
+                     catch( const ::soci::soci_error& ex )
+                     {
+                     }
+
+                     auto queries = this->make_snap_rng_query_string( *this->_sim );
+                     for( const auto& query : queries )
+                        pair.second->Connection << query;
+                  }
                }
             }
          }

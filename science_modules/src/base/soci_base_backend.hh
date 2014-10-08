@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <boost/range/algorithm/fill.hpp>
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
 #include <boost/algorithm/string.hpp>
@@ -238,24 +239,28 @@ namespace tao {
             if( this->_field_map.empty() )
                _load_field_types();
 
-            // Create temporary snapshot range table if simulation
-            // is set.
-            if( this->_sim )
+            // Only try to initialise table info if required.
+            if( this->_init_tbls )
             {
-               LOGBLOCKI( "Making redshift range table." );
-
-               // Try and drop the redshift range table.
-               try
+               // Create temporary snapshot range table if simulation
+               // is set.
+               if( this->_sim )
                {
-                  session() << this->make_drop_snap_rng_query_string();
-               }
-               catch( const ::soci::soci_error& ex )
-               {
-               }
+                  LOGBLOCKI( "Making redshift range table." );
 
-               auto queries = this->make_snap_rng_query_string( *this->_sim );
-               for( const auto& query : queries )
-                  session() << query;
+                  // Try and drop the redshift range table.
+                  try
+                  {
+                     session() << this->make_drop_snap_rng_query_string();
+                  }
+                  catch( const ::soci::soci_error& ex )
+                  {
+                  }
+
+                  auto queries = this->make_snap_rng_query_string( *this->_sim );
+                  for( const auto& query : queries )
+                     session() << query;
+               }
             }
          }
 
@@ -266,22 +271,37 @@ namespace tao {
 
             // Extract the size and allocate.
             int size;
-            session() << "SELECT COUNT(*) FROM summary", soci::into( size );
-            _minx.resize( size );
-            _miny.resize( size );
-            _minz.resize( size );
-            _maxx.resize( size );
-            _maxy.resize( size );
-            _maxz.resize( size );
-            _tbls.resize( size );
-            _tbl_sizes.resize( size );
+            session() << "SELECT COUNT(*) FROM table_db_mapping WHERE isactive=true", soci::into( size );
+	    _minx.resize( size );
+	    _miny.resize( size );
+	    _minz.resize( size );
+	    _maxx.resize( size );
+	    _maxy.resize( size );
+	    _maxz.resize( size );
+	    _tbl_sizes.resize( size );
+	    _tbls.resize( size );
             LOGILN( "Number of tables: ", size );
 
             // Now extract table info.
-            session() << "SELECT minx, miny, minz, maxx, maxy, maxz, galaxycount, tablename FROM summary",
-               soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
-               soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
-               soci::into( _tbl_sizes ), soci::into( _tbls );
+            if( this->_init_tbls )
+            {
+               session() << "SELECT minx, miny, minz, maxx, maxy, maxz, galaxycount, tablename FROM summary",
+                  soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
+                  soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
+                  soci::into( _tbl_sizes ), soci::into( _tbls );
+            }
+            else
+            {
+	       session() << "SELECT tablename FROM table_db_mapping WHERE isactive=true",
+                  soci::into( _tbls );
+	       boost::fill( _minx, 0.0 );
+	       boost::fill( _miny, 0.0 );
+	       boost::fill( _minz, 0.0 );
+	       boost::fill( _maxx, 0.0 );
+	       boost::fill( _maxy, 0.0 );
+	       boost::fill( _maxz, 0.0 );
+	       boost::fill( _tbl_sizes, 0 );
+            }
          }
 
          void
@@ -356,8 +376,11 @@ namespace tao {
 
             // Make sure we have all the essential fields available. Do this by
             // checking that all the mapped fields exist in the field types.
-            for( const auto& item : this->_field_map )
-               EXCEPT( hpc::has( this->_field_types, item.second ), "Database is missing essential field: ", item.second );
+	    if( this->_init_tbls )
+	    {
+	       for( const auto& item : this->_field_map )
+		  EXCEPT( hpc::has( this->_field_types, item.second ), "Database is missing essential field: ", item.second );
+	    }
          }
 
       protected:

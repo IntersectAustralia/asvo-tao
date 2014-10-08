@@ -64,8 +64,9 @@ namespace tao {
 
             // Create the backend.
             _be = new backend_type;
+	    _be->set_init_tables( false );
             _be->connect( global_dict );
-
+	    _be->set_init_tables( false );
 	    _read_options( global_dict );
 	 }
 
